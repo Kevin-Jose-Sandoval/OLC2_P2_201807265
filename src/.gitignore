@@ -1,0 +1,5 @@
+**/__pycache__/**
+vscode/
+HelpMaterial/
+Grammar/parser.out
+Grammar/parsetab.py
