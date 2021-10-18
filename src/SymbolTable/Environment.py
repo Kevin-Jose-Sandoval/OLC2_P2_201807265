@@ -9,8 +9,13 @@ class Environment:
         self.previous = previous
         
         self.size = 0
+        self.break_label = ''
+        self.continue_label = ''
+        
         if previous is not None:
             self.size = self.previous.size
+            self.break_label = self.previous.break_label
+            self.continue_label = self.previous.continue_label
         
         self.variables = {}
         self.functions = {}

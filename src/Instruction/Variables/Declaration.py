@@ -20,8 +20,11 @@ class Declaration(Instruction):
         generator.addComment("--- Fin < Compilar valor de variable > ---")
         
         # checking if it is in the heap -> saveVar(id_var_, type_, in_heap_)
-        in_heap = (value.type == Type.STRING or value.type == Type.STRUCT)
-        new_var = environment_.saveVar(self.id, value.type, in_heap)
+        new_var = environment_.getVar(self.id)
+        if new_var is None:
+            in_heap = (value.type == Type.STRING or value.type == Type.STRUCT)
+            new_var = environment_.saveVar(self.id, value.type, in_heap)
+        new_var.type = value.type
         
         # get position of variable: space where it is 
         temp_pos = new_var.pos

@@ -7,13 +7,13 @@ from src.SymbolTable.Exception import *
 from src.Instruction.Statement import *
 from src.Instruction.Print import *
 from src.Instruction.Variables.Declaration import *
-
-"""
 from src.Instruction.Conditional.If import *
 from src.Instruction.Loops.While import *
-from src.Instruction.Functions.Return import *
 from src.Instruction.Loops.Break import *
 from src.Instruction.Loops.Continue import *
+
+"""
+from src.Instruction.Functions.Return import *
 from src.Instruction.Functions.Function import *
 from src.Instruction.Functions.Param import *
 from src.Instruction.Arrays.Array import *
@@ -276,6 +276,11 @@ def p_instruction(t):
     '''
     instruction : print_st SEMICOLON
                 | declaration_st SEMICOLON
+                | if_st SEMICOLON
+                
+                | while_st SEMICOLON
+                | break_st SEMICOLON
+                | continue_st SEMICOLON
     '''
     t[0] = t[1]
 
@@ -289,14 +294,17 @@ def p_instruccion_error(t):
     'instruction : error SEMICOLON'
     
     print("Error sintáctico: ", str(t[1].value))
-    errors.append(
-        Exception("En la instruccion: " + str(t[1].value), t.lineno(1), find_column(input_, t.slice[1])))
+    #errors.append(Exception("En la instruccion: " + str(t[1].value), t.lineno(1), find_column(input_, t.slice[1])))
     t[0] = ""
     
 # ------------------------------ PRINT
 def p_println_st(t):
     'print_st : PRINTLN LEFT_PAR expression RIGHT_PAR'
     t[0] = Print(t[3], t.lineno(1), find_column(input_, t.slice[1]), True)
+
+def p_print_st(t):
+    'print_st : PRINT LEFT_PAR expression RIGHT_PAR'
+    t[0] = Print(t[3], t.lineno(1), find_column(input_, t.slice[1]))
 
 # ------------------------------ DECLARATION
 def p_declaration_st(t):
@@ -310,6 +318,48 @@ def p_declaration_st(t):
 def p_expression_id(t):
     'expression : ID'
     t[0] = Access(t[1], t.lineno(1), find_column(input_, t.slice[1]))
+
+# ------------------------------ IF
+def p_if_st(t):
+    '''
+    if_st : IF expression statement END
+          | IF expression statement ELSE statement END
+          | IF expression statement else_if_list END
+    '''
+    if len(t) == 5:
+        t[0] = If(t[2], t[3], t.lineno(1), find_column(input_, t.slice[1]))
+    elif len(t) == 7:
+        t[0] = If(t[2], t[3], t.lineno(1), find_column(input_, t.slice[1]), t[5])
+    elif len(t) == 6:
+        t[0] = If(t[2], t[3], t.lineno(1), find_column(input_, t.slice[1]), t[4])
+                
+def p_else_if_list(t):
+    '''
+    else_if_list : ELSE_IF expression statement
+                 | ELSE_IF expression statement ELSE statement
+                 | ELSE_IF expression statement else_if_list
+    '''
+    if len(t) == 4:
+        t[0] = If(t[2], t[3], t.lineno(1), find_column(input_, t.slice[1]))
+    elif len(t) == 6:
+        t[0] = If(t[2], t[3], t.lineno(1), find_column(input_, t.slice[1]), t[5])
+    elif len(t) == 5:
+        t[0] = If(t[2], t[3], t.lineno(1), find_column(input_, t.slice[1]), t[4])
+
+# ------------------------------ WHILE
+def p_while_st(t):
+    'while_st : WHILE expression statement END'
+    t[0] = While(t[2], t[3], t.lineno(1), find_column(input_, t.slice[1]))
+
+# ------------------------------ BREAK
+def p_break_st(t):
+    'break_st : BREAK'
+    t[0] = Break(t.lineno(1), find_column(input_, t.slice[1]))
+            
+# ------------------------------ CONTINUE
+def p_continue_st(t):
+    'continue_st : CONTINUE'
+    t[0] = Continue(t.lineno(1), find_column(input_, t.slice[1]))
 
 # ------------------------------ EXPRESSIONS
 def p_expression(t):
