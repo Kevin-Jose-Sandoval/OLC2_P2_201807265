@@ -6,10 +6,11 @@ from src.SymbolTable.Exception import *
 # instructions
 from src.Instruction.Statement import *
 from src.Instruction.Print import *
+from src.Instruction.Variables.Declaration import *
+
 """
 from src.Instruction.Conditional.If import *
 from src.Instruction.Loops.While import *
-from src.Instruction.Variables.Declaration import *
 from src.Instruction.Functions.Return import *
 from src.Instruction.Loops.Break import *
 from src.Instruction.Loops.Continue import *
@@ -28,8 +29,9 @@ from src.Expression.Arithmetic import *
 from src.Expression.Primitive import *
 from src.Expression.Relational import *
 from src.Expression.Logical import *
-""" 
 from src.Expression.Access import *
+
+""" 
 from src.Expression.CallFunction import *
 from src.Natives.Mathematic import *
 from src.Natives.DataManagement import *
@@ -273,6 +275,7 @@ def p_instructions(t):
 def p_instruction(t):
     '''
     instruction : print_st SEMICOLON
+                | declaration_st SEMICOLON
     '''
     t[0] = t[1]
 
@@ -287,14 +290,27 @@ def p_instruccion_error(t):
     
     print("Error sintáctico: ", str(t[1].value))
     errors.append(
-        Exception("Sintáctico", "En la instruccion: " + str(t[1].value), t.lineno(1), find_column(input_, t.slice[1])))
+        Exception("En la instruccion: " + str(t[1].value), t.lineno(1), find_column(input_, t.slice[1])))
     t[0] = ""
     
 # ------------------------------ PRINT
 def p_println_st(t):
     'print_st : PRINTLN LEFT_PAR expression RIGHT_PAR'
     t[0] = Print(t[3], t.lineno(1), find_column(input_, t.slice[1]), True)
-                
+
+# ------------------------------ DECLARATION
+def p_declaration_st(t):
+    '''
+    declaration_st : ID EQUAL expression
+    '''
+    if len(t) == 4:
+        t[0] = Declaration(t[1], t[3], t.lineno(2), find_column(input_, t.slice[2]))
+
+# ------------------------------ ACCESS ID
+def p_expression_id(t):
+    'expression : ID'
+    t[0] = Access(t[1], t.lineno(1), find_column(input_, t.slice[1]))
+
 # ------------------------------ EXPRESSIONS
 def p_expression(t):
     '''

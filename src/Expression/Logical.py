@@ -17,7 +17,7 @@ class Logical(Expression):
         generator = generator_aux.getInstance()
         
         generator.addSpace()                    
-        generator.addComment("◅▻◅▻ Inicio < Logica >  ◅▻◅▻")        
+        generator.addComment("--- Inicio < Logica >  ---")        
                 
         self.checkLabels()
         label_union = ''
@@ -52,7 +52,7 @@ class Logical(Expression):
             if right.type != Type.BOOLEAN:
                 return Exception('Logica: El operando derecho debe ser de tipo BOOLEAN', self.line, self.column)
         
-        generator.addComment("◅▻◅▻ Fin < Logica >  ◅▻◅▻")        
+        generator.addComment("--- Fin < Logica >  ---")        
         generator.addSpace()
         
         result = Value(None, Type.BOOLEAN, False)
@@ -68,4 +68,4 @@ class Logical(Expression):
         if self.true_label == '':
             self.true_label = generator.newLabel()
         if self.false_label == '':
-            self.false_label = generator.newLabel()    
+            self.false_label = generator.newLabel()

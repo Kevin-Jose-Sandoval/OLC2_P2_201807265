@@ -38,17 +38,23 @@ class Primitive(Expression):
             return result
         
         elif self.type == Type.STRING:
-            retTemp = generator.addTemp()
-            generator.addExpression(retTemp, 'H', '', '')
+            # ret_temp: value in heap (free value in heap )
+            ret_temp = generator.addTemp()
+            # ret_temp =  H
+            generator.addExpression(ret_temp, 'H', '', '')
 
             for char in str(self.value):
-                generator.setHeap('H', ord(char))   # heap[H] = NUM;
-                generator.nextHeap()                # H = H + 1;
+                # heap[H] = caracter
+                generator.setHeap('H', ord(char))
+                # H = h + 1
+                generator.nextHeap()
 
-            generator.setHeap('H', '-1')            # FIN DE CADENA
+            # EOF the string
+            generator.setHeap('H', '-1')
             generator.nextHeap()
 
-            return Value(retTemp, Type.STRING, True)            
+            # return a temporary
+            return Value(ret_temp, Type.STRING, True)
          
         else:
             print("Falta en Primitive")

@@ -4,7 +4,15 @@ from src.SymbolTable.Generator import *
 
 def compile():
     input_ = '''
-    println("Hola mundo");     
+
+a = (10 + 10) * (8 / (2+2));
+b = "Que tal";
+c = true;
+
+println("Hola Mundo!");
+println(a);
+println(b);
+println(c); 
     '''
     
     generator_aux = Generator()
@@ -20,5 +28,3 @@ def compile():
     print(generator.getCode())
     
 compile()
-
-

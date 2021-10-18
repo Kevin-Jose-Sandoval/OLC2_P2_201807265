@@ -29,20 +29,23 @@ class Print(Instruction):
             generator.putLabel(exit_label)
 
         elif value.type == Type.STRING:
+            # call the function to generate the code
             generator.fPrintString()
-
-            paramTemp = generator.addTemp()
-            
-            generator.addExpression(paramTemp, 'P', environment_.size, '+')
-            # value 0 is to return, because increases 1
+            # access to simulated environment: t13 = P + size
+            paramTemp = generator.addTemp()            
+            generator.addExpression(paramTemp, 'P', environment_.size, '+')            
+            # increases 1 because index 0 is to return
             generator.addExpression(paramTemp, paramTemp, '1', '+')
-            generator.setStack(paramTemp, value.value)
             
+            # stack[int(paramTemp)] = value.value
+            generator.setStack(paramTemp, value.value)
+            # change environment: P = P + size
             generator.newEnv(environment_.size)
             generator.callFun('printString')
 
-            # get return
+            # get return value
             temp = generator.addTemp()
+            # now P is in printString() environment
             generator.getStack(temp, 'P')
             generator.retEnv(environment_.size)
 

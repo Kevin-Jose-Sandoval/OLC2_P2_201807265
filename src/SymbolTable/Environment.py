@@ -1,8 +1,6 @@
 from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import Type
 from src.SymbolTable.Symbol import *
-from src.Export import output
-from src.SymbolTable.TableObject import *
 from src.SymbolTable.Types import *
 
 class Environment:
@@ -25,6 +23,7 @@ class Environment:
             print("Ya existe la variable " + str(id_var_))
             
         else:
+            # (id_, type_, position_, is_global_, in_heap_)
             new_symbol = Symbol(id_var_, type_, self.size, self.previous == None, in_heap_)
             self.size += 1
             self.variables[id_var_] = new_symbol
@@ -49,8 +48,6 @@ class Environment:
             return True
         else:
             self.functions[id_function_] = function_
-            output.symbol_table.append(TableObject(id_function_, self.type, self.scope,
-                                                   " Cuerpo función ", function_.line, function_.column))
             return False
             
     def saveStruct(self, id_struct_, attributes_, type_struct_)            :
