@@ -1,6 +1,6 @@
+from src.Generator.Generator3D import Generator
 from src.Abstract.Expression import *
 from src.Abstract.Value import *
-from src.SymbolTable.Generator import Generator
 from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import *
 

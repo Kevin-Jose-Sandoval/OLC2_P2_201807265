@@ -1,4 +1,4 @@
-from src.SymbolTable.Generator import Generator
+from src.Generator.Generator3D import Generator
 from src.Abstract.Instruction import *
 from src.SymbolTable.Types import *
 from src.SymbolTable.Exception import *
