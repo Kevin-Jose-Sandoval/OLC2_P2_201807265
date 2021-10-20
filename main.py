@@ -4,27 +4,7 @@ from src.SymbolTable.Generator import *
 
 def compile():
     input_ = '''
-a = 10;
-while a > 0
-    print("El valor de a es: ");
-    println(a);
-    a = a - 1;
-end;
-
-println("--");
-
-while a < 5
-    a = a + 1;
-    if a == 3
-        println("a");
-        continue;
-    elseif a == 4
-        println("b");
-        break;
-    end;
-    print("El valor de a es: ");
-    println(a);
-end;   
+    println(5^0);
     '''
     
     generator_aux = Generator()

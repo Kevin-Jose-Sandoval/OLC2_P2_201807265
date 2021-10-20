@@ -16,6 +16,7 @@ class Generator:
         self.temps = []
         # natives list
         self.printString = False
+        self.potency = False
 
     # ============ Code 3D
     def initialHeader(self):
@@ -31,7 +32,7 @@ class Generator:
             
             header += ' float64;\n'
         
-        header += 'var P, H float64;\nvar stack [26082000]float64;\nvar heap [26082000]float64;\n\n'
+        header += 'var P, H float64;\nvar stack [200]float64;\nvar heap [200]float64;\n\n'
         return header
     
     def getCode(self):
@@ -76,6 +77,8 @@ class Generator:
         self.temps = []
         # natives list
         self.printString = False
+        self.potency = False
+        
         Generator.generator = Generator()    
     
     # ============ Temporary - label - goto - expression - if
@@ -200,4 +203,52 @@ class Generator:
 
         self.putLabel(returnLbl)
         self.addEndFunc()
+        self.inNatives = False
+
+    def fPotency(self):
+        if self.potency:
+            return
+        self.potency = True
+        self.inNatives = True
+        
+        self.addBeginFunc('potency')
+        t0 = self.addTemp()        
+        self.addExpression(t0, 'P', '1', '+')
+        
+        t1 = self.addTemp()
+        self.getStack(t1, t0)
+        
+        self.addExpression(t0, t0, '1', '+')
+        
+        t2 = self.addTemp()
+        self.getStack(t2, t0)
+        
+        self.addExpression(t0, t1, '', '')
+
+        L0 = self.newLabel()
+        L1 = self.newLabel()
+        L2 = self.newLabel()
+        exit_label = self.newLabel()
+        
+        # if exponent is 0, return in stack 1
+        self.addIf(t2, '0', '==', L2)            
+        
+        # else, continue
+        self.putLabel(L0)
+        
+        self.addIf(t2, '1', '<=', L1)
+        self.addExpression(t1, t1, t0, '*')
+        self.addExpression(t2, t2, '1', '-')
+        self.addGoto(L0)
+        self.putLabel(L1)
+        self.setStack('P', t1)        
+        self.addGoto(exit_label)
+        
+        # label if exponent is 0
+        self.putLabel(L2)
+        self.setStack('P', 1)
+        
+        self.putLabel(exit_label)
+        
+        self.addEndFunc()                
         self.inNatives = False

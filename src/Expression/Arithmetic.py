@@ -1,5 +1,5 @@
 from src.Abstract.Expression import *
-from src.SymbolTable.Generator import *
+from src.SymbolTable.Generator import Generator
 from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import *
 from src.Abstract.Value import *
@@ -22,8 +22,32 @@ class Arithmetic(Expression):
         if isinstance(left_value, Exception): return left_value
         if isinstance(right_value, Exception): return right_value
 
-        temp = generator.addTemp()
-        operation = getArithmeticType(self.type)
+        temp = generator.addTemp()        
+        operation = getArithmeticType(self.type)    # +, -, *, /
+        
+        # POTENCY
+        if self.type == ArithmeticType.POWER:
+            generator.fPotency()
+            param_temp = generator.addTemp()            
+            generator.addExpression(param_temp, 'P', environment_.size, '+')
+            
+            # base
+            generator.addExpression(param_temp, param_temp, '1', '+')
+            generator.setStack(param_temp, left_value.value)
+            
+            # exponent
+            generator.addExpression(param_temp, param_temp, '1', '+')
+            generator.setStack(param_temp, right_value.value)            
+            
+            generator.newEnv(environment_.size)
+            generator.callFun('potency')
+            
+            temp = generator.addTemp()
+            generator.getStack(temp, 'P')
+            generator.retEnv(environment_.size)
+
+            # return
+            return Value(temp, Type.INT, True)
 
         generator.addExpression(temp, left_value.value, right_value.value, operation)
         return Value(temp, Type.INT, True)

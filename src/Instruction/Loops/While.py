@@ -1,4 +1,4 @@
-from src.SymbolTable.Generator import *
+from src.SymbolTable.Generator import Generator
 from src.Abstract.Instruction import *
 from src.Abstract.Value import *
 from src.SymbolTable.Types import *

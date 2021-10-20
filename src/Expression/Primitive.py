@@ -1,7 +1,7 @@
 from src.Abstract.Expression import *
 from src.Abstract.Value import *
 from src.SymbolTable.Types import *
-from src.SymbolTable.Generator import *
+from src.SymbolTable.Generator import Generator
 
 class Primitive(Expression):
     
