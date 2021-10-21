@@ -30,7 +30,7 @@ from src.Expression.Primitive import *
 from src.Expression.Relational import *
 from src.Expression.Logical import *
 from src.Expression.Access import *
-
+from src.Natives.UpperCase import *
 """ 
 from src.Expression.CallFunction import *
 from src.Natives.Mathematic import *
@@ -427,6 +427,11 @@ def p_unary_operation(t):
                           t[2], ArithmeticType.MINUS, t.lineno(1), find_column(input_, t.slice[1]))
     elif t[1] == '!':
         t[0] = Logical(t[2], None, LogicalType.NOT, t.lineno(1), find_column(input_, t.slice[1]))
+
+# ------------------------------ NATIVES
+def p_expression_uppercase(t):
+    'expression : UPPER LEFT_PAR expression RIGHT_PAR'
+    t[0] = UpperCase(t[3], t.lineno(1), find_column(input_, t.slice[1]))
 
 # ------------------------------ EXPRESSIONS - PRIMITIVES
 def p_primitive_int(t):

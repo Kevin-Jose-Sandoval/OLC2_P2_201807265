@@ -17,6 +17,7 @@ class Generator:
         # natives list
         self.printString = False
         self.potency = False
+        self.upperCase = False
 
     # ============ Code 3D
     def initialHeader(self):
@@ -32,7 +33,7 @@ class Generator:
             
             header += ' float64;\n'
         
-        header += 'var P, H float64;\nvar stack [1000]float64;\nvar heap [1000]float64;\n\n'
+        header += 'var P, H float64;\nvar stack [1000000]float64;\nvar heap [1000000]float64;\n\n'
         return header
     
     def getCode(self):
@@ -78,6 +79,7 @@ class Generator:
         # natives list
         self.printString = False
         self.potency = False
+        self.upperCase = False
         
         Generator.generator = Generator()    
     
@@ -212,7 +214,7 @@ class Generator:
         self.inNatives = True
         
         self.addBeginFunc('potency')
-        t0 = self.addTemp()        
+        t0 = self.addTemp()
         self.addExpression(t0, 'P', '1', '+')
         
         t1 = self.addTemp()
@@ -250,5 +252,48 @@ class Generator:
         
         self.putLabel(exit_label)
         
+        self.addEndFunc()                
+        self.inNatives = False
+        
+    def fUpperCase(self):
+        if self.upperCase:
+            return
+        self.upperCase = True
+        self.inNatives = True
+
+        self.addBeginFunc('upperCase')
+        
+        t1 = self.addTemp()
+        self.addExpression(t1, 'H', '', '')
+        t2 = self.addTemp()
+        self.addExpression(t2, 'P', '1', '+')
+        self.getStack(t2, t2)
+        
+        L0 = self.newLabel()        
+        self.putLabel(L0)
+        
+        L2 = self.newLabel()        
+        L1 = self.newLabel()
+        
+        t3 = self.addTemp()
+        self.getHeap(t3, t2)
+        
+        self.addIf(t3, '-1', '==', L2)
+        self.addIf(t3, '97', '<', L1)
+        self.addIf(t3, '122', '>', L1)
+        
+        self.addExpression(t3, t3, '32', '-')
+        
+        self.putLabel(L1)
+        self.setHeap('H', t3)
+        self.nextHeap()
+        self.addExpression(t2, t2, '1', '+')
+        self.addGoto(L0)
+        
+        self.putLabel(L2)
+        self.setHeap('H', '-1')
+        self.nextHeap()
+        self.setStack('P', t1)
+
         self.addEndFunc()                
         self.inNatives = False

@@ -28,7 +28,7 @@ class Arithmetic(Expression):
         # POTENCY
         if self.type == ArithmeticType.POWER:
             generator.fPotency()
-            param_temp = generator.addTemp()            
+            param_temp = generator.addTemp()
             generator.addExpression(param_temp, 'P', environment_.size, '+')
             
             # base
