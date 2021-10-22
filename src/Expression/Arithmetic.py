@@ -26,6 +26,25 @@ class Arithmetic(Expression):
         temp = generator.addTemp()        
         operation = getArithmeticType(self.type)    # +, -, *, /
         
+        if self.type == ArithmeticType.DIV:
+            label_true = generator.newLabel()
+            label_false = generator.newLabel()
+            
+            generator.addIf(right_value.value, '0', '!=', label_true)
+            generator.printMathError()            
+            generator.addExpression(temp, '0', '', '')
+            generator.addGoto(label_false)
+            generator.putLabel(label_true)
+            
+            generator.addExpression(temp, left_value.value, right_value.value, operation)
+            type_ = getTypeMatrix(left_value.type, right_value.type)
+            
+            
+            result =  Value(temp, type_, True)
+            result.false_label = label_false
+            
+            return result
+        
         # POTENCY
         if self.type == ArithmeticType.POWER:
             generator.fPotency()
@@ -53,4 +72,4 @@ class Arithmetic(Expression):
         generator.addExpression(temp, left_value.value, right_value.value, operation)
         type_ = getTypeMatrix(left_value.type, right_value.type)
         
-        return Value(temp, type_, True)
+        return Value(temp, type_, True)        

@@ -107,6 +107,8 @@ def getArithmeticType(type_):
         return '*'
     elif type_ == ArithmeticType.DIV:
         return '/'
+    elif type_ == ArithmeticType.MOD:
+        return '%'  
     
 def getRelationalType(type_):
     if type_ == RelationalType.GREATER:

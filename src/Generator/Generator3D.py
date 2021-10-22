@@ -136,6 +136,17 @@ class Generator:
         self.addPrint("c", 115)
         self.addPrint("c", 101)
 
+    def printMathError(self):
+        self.addPrint("c", 77)      # M
+        self.addPrint("c", 97)      # a
+        self.addPrint("c", 116)     # t
+        self.addPrint("c", 104)     # h
+        self.addPrint("c", 69)      # E
+        self.addPrint("c", 114)     # r
+        self.addPrint("c", 114)     # r
+        self.addPrint("c", 111)     # o
+        self.addPrint("c", 114)     # r
+        
     # ============ STACK
     def setStack(self, pos_, value_):
         # stack[int(pos_)] = value_

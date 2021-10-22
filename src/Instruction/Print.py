@@ -17,6 +17,11 @@ class Print(Instruction):
         if value.type == Type.INT64:
             generator.addPrint("d", value.value)
             
+            if value.true_label != '':
+                generator.putLabel(value.true_label)
+            if value.false_label != '':
+                generator.putLabel(value.false_label)
+            
         elif value.type == Type.BOOLEAN:
             exit_label = generator.newLabel()
             
