@@ -28,12 +28,13 @@ class TypeNative(Enum):
     LENGTH = 15
     
 class Type(Enum):
-    NULL = 0
-    INT = 1
-    FLOAT = 2
-    BOOLEAN = 3
-    CHAR = 4
-    STRING = 5
+    INT64 = 0
+    FLOAT64 = 1
+    BOOLEAN = 2
+    CHAR = 3
+    STRING = 4
+    
+    NULL = 5  
     ARRAY = 6
     STRUCT = 7
     UNDEFINED = 8
@@ -41,6 +42,8 @@ class Type(Enum):
     RETURN_ST = 9
     CONTINUE_ST = 10
     BREAK_ST = 11
+    
+    ERROR = 12
 
 class ArithmeticType(Enum):
     PLUS = 0    # +

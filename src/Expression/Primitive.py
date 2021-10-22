@@ -14,7 +14,7 @@ class Primitive(Expression):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
                 
-        if self.type == Type.INT or self.type == Type.FLOAT:
+        if self.type == Type.INT64 or self.type == Type.FLOAT64:
             return Value(str(self.value), self.type, False)
         
         elif self.type == Type.BOOLEAN:

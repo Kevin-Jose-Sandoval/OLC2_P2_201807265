@@ -34,7 +34,7 @@ class Relational(Expression):
             
             if isinstance(right, Exception): return right
             
-            if (left.type == Type.INT or left.type == Type.FLOAT) and (right.type == Type.INT or right.type == Type.FLOAT):
+            if (left.type == Type.INT64 or left.type == Type.FLOAT64) and (right.type == Type.INT64 or right.type == Type.FLOAT64):
                 self.checkLabels()
                 generator.addIf(left.value, right.value, getRelationalType(self.type), self.true_label)
                 generator.addGoto(self.false_label)

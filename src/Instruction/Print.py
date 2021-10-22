@@ -14,7 +14,7 @@ class Print(Instruction):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
         
-        if value.type == Type.INT:
+        if value.type == Type.INT64:
             generator.addPrint("d", value.value)
             
         elif value.type == Type.BOOLEAN:

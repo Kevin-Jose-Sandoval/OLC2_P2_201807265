@@ -1,4 +1,5 @@
 from src.Generator.Generator3D import Generator
+from src.SymbolTable.TypeMatrix import *
 from src.Abstract.Expression import *
 from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import *
@@ -50,4 +51,6 @@ class Arithmetic(Expression):
             return Value(temp, Type.INT, True)
 
         generator.addExpression(temp, left_value.value, right_value.value, operation)
-        return Value(temp, Type.INT, True)
+        type_ = getTypeMatrix(left_value.type, right_value.type)
+        
+        return Value(temp, type_, True)

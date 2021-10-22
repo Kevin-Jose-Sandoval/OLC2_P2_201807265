@@ -424,7 +424,7 @@ def p_unary_operation(t):
                | NOT expression %prec UNOT
     '''
     if t[1] == '-':
-        t[0] = Arithmetic(Primitive(0, Type.INT, t.lineno(1), find_column(input_, t.slice[1])),
+        t[0] = Arithmetic(Primitive(0, Type.INT64, t.lineno(1), find_column(input_, t.slice[1])),
                           t[2], ArithmeticType.MINUS, t.lineno(1), find_column(input_, t.slice[1]))
     elif t[1] == '!':
         t[0] = Logical(t[2], None, LogicalType.NOT, t.lineno(1), find_column(input_, t.slice[1]))
@@ -441,11 +441,11 @@ def p_expression_lowercase(t):
 # ------------------------------ EXPRESSIONS - PRIMITIVES
 def p_primitive_int(t):
     'expression : PRIMITIVE_INT'
-    t[0] = Primitive(int(t[1]), Type.INT, t.lineno(1), find_column(input_, t.slice[1]))
+    t[0] = Primitive(int(t[1]), Type.INT64, t.lineno(1), find_column(input_, t.slice[1]))
 
 def p_primitive_float(t):
     'expression : PRIMITIVE_FLOAT'
-    t[0] = Primitive(float(t[1]), Type.FLOAT, t.lineno(1), find_column(input_, t.slice[1]))
+    t[0] = Primitive(float(t[1]), Type.FLOAT64, t.lineno(1), find_column(input_, t.slice[1]))
 
 def p_primitive_string(t):
     'expression : PRIMITIVE_STRING'

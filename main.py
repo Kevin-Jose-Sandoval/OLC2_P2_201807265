@@ -4,8 +4,8 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-    println(lowercase("aa AA kevin Jose SANDOVAL"));
-    println(uppercase("aa AA kevin Jose SANDOVAL"));
+    println(5.0+5.3);
+    #println(uppercase("aa AA kevin Jose SANDOVAL"));
     
     '''
     
