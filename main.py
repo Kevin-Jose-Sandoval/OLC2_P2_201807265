@@ -4,7 +4,9 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-    println(uppercase("kevin Jose SANDOVAL"));
+    println(lowercase("aa AA kevin Jose SANDOVAL"));
+    println(uppercase("aa AA kevin Jose SANDOVAL"));
+    
     '''
     
     generator_aux = Generator()

@@ -31,6 +31,7 @@ from src.Expression.Relational import *
 from src.Expression.Logical import *
 from src.Expression.Access import *
 from src.Natives.UpperCase import *
+from src.Natives.LowerCase import *
 """ 
 from src.Expression.CallFunction import *
 from src.Natives.Mathematic import *
@@ -432,6 +433,10 @@ def p_unary_operation(t):
 def p_expression_uppercase(t):
     'expression : UPPER LEFT_PAR expression RIGHT_PAR'
     t[0] = UpperCase(t[3], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_expression_lowercase(t):
+    'expression : LOWER LEFT_PAR expression RIGHT_PAR'
+    t[0] = LowerCase(t[3], t.lineno(1), find_column(input_, t.slice[1]))
 
 # ------------------------------ EXPRESSIONS - PRIMITIVES
 def p_primitive_int(t):

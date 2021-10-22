@@ -18,6 +18,7 @@ class Generator:
         self.printString = False
         self.potency = False
         self.upperCase = False
+        self.lowerCase = False
 
     # ============ Code 3D
     def initialHeader(self):
@@ -80,6 +81,7 @@ class Generator:
         self.printString = False
         self.potency = False
         self.upperCase = False
+        self.lowerCase = False        
         
         Generator.generator = Generator()    
     
@@ -295,5 +297,50 @@ class Generator:
         self.nextHeap()
         self.setStack('P', t1)
 
-        self.addEndFunc()                
+        self.addEndFunc()
+        self.inNatives = False
+        
+    def fLowerCase(self):
+        if self.lowerCase:
+            return
+        self.lowerCase = True
+        self.inNatives = True
+
+        self.addBeginFunc('lowerCase')
+        
+        # Start code
+        t1 = self.addTemp()
+        self.addExpression(t1, 'H', '', '')
+        t2 = self.addTemp()
+        self.addExpression(t2, 'P', '1', '+')
+        self.getStack(t2, t2)
+        
+        L0 = self.newLabel()        
+        self.putLabel(L0)
+        
+        L2 = self.newLabel()        
+        L1 = self.newLabel()
+        
+        t3 = self.addTemp()
+        self.getHeap(t3, t2)
+        
+        self.addIf(t3, '-1', '==', L2)
+        self.addIf(t3, '65', '<', L1)
+        self.addIf(t3, '90', '>', L1)
+        
+        self.addExpression(t3, t3, '32', '+')
+        
+        self.putLabel(L1)
+        self.setHeap('H', t3)
+        self.nextHeap()
+        self.addExpression(t2, t2, '1', '+')
+        self.addGoto(L0)
+        
+        self.putLabel(L2)
+        self.setHeap('H', '-1')
+        self.nextHeap()
+        self.setStack('P', t1)
+        # end code        
+        
+        self.addEndFunc()
         self.inNatives = False
