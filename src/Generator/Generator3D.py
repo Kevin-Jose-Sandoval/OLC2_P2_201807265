@@ -20,6 +20,7 @@ class Generator:
         self.upperCase = False
         self.lowerCase = False
         self.concatenateStr = False
+        self.repetitionStr = False
 
     # ============ Code 3D
     def initialHeader(self):
@@ -84,7 +85,8 @@ class Generator:
         self.upperCase = False
         self.lowerCase = False        
         self.concatenate = False
-        
+        self.repetitionStr = False
+
         Generator.generator = Generator()    
     
     # ============ Temporary - label - goto - expression - if
@@ -410,5 +412,72 @@ class Generator:
         self.setStack('P', t2)
         # end code
         
+        self.addEndFunc()
+        self.inNatives = False
+        
+    def fRepetitionStr(self):
+        if self.repetitionStr:
+            return
+        self.repetitionStr = True
+        self.inNatives = True
+
+        self.addBeginFunc('repetitionStr')
+        
+        # ===== START CODE
+        # 0 - return
+        # 1 - string
+        # 2 - int
+        
+        t0 = self.addTemp()        
+        self.addExpression(t0, 'H', '', '')
+        
+        # first parameter : string
+        t1 = self.addTemp()
+        t2 = self.addTemp()
+        self.addExpression(t1, 'P', '1', '+')
+        self.getStack(t2, t1)       # position in stack of string
+        
+        # second parameter: number
+        t3 = self.addTemp()
+        self.addExpression(t1, 'P', '2', '+')        
+        self.getStack(t3, t1)   # t3 has a number
+
+        # cycle
+        L0 = self.newLabel()
+        L1 = self.newLabel()
+        L2 = self.newLabel()
+
+        # counter
+        counter = self.addTemp()        
+        self.addExpression(counter, '0', '', '')
+        
+        t5 = self.addTemp()
+        self.addExpression(t5, t2, '', '')
+        
+        self.putLabel(L0)
+        t4 = self.addTemp()
+
+        
+        self.getHeap(t4, t2)    # start of string
+        
+        self.addIf(t4, '-1', '==', L1)
+        self.setHeap('H', t4)
+        self.nextHeap()
+        self.addExpression(t2, t2, '1', '+')
+        
+        self.addGoto(L0)    # start again
+        
+        self.putLabel(L1)
+        self.addExpression(counter, counter, '1', '+')
+        # restart counter of string
+        self.addExpression(t2, t5, '', '')        
+        self.addIf(counter, t3, '==' , L2)
+        self.addGoto(L0)
+        
+        self.putLabel(L2)
+        self.setHeap('H', '-1')        
+        self.setStack('P', t0)        
+        # ===== END CODE
+
         self.addEndFunc()
         self.inNatives = False

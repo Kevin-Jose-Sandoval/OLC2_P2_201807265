@@ -25,6 +25,30 @@ class Arithmetic(Expression):
 
         temp = generator.addTemp()        
         operation = getArithmeticType(self.type)    # +, -, *, /
+
+        # repetition
+        if  left_value.type == Type.STRING and right_value.type == Type.INT64 and self.type == ArithmeticType.POWER:
+            generator.fRepetitionStr()
+            param_temp = generator.addTemp()
+            generator.addExpression(param_temp, 'P', environment_.size, '+')
+            
+            # left_value -> string
+            generator.addExpression(param_temp, param_temp, '1', '+')
+            generator.setStack(param_temp, left_value.value)
+            
+            # right_value
+            generator.addExpression(param_temp, param_temp, '1', '+')
+            generator.setStack(param_temp, right_value.value)            
+            
+            generator.newEnv(environment_.size)
+            generator.callFun('repetitionStr')
+            
+            temp = generator.addTemp()
+            generator.getStack(temp, 'P')
+            generator.retEnv(environment_.size)
+
+            # return
+            return Value(temp, Type.STRING, True)             
         
         # concatenation
         if left_value.type == Type.STRING and right_value.type == Type.STRING and operation == '*':
