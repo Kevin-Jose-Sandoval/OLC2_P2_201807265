@@ -26,24 +26,50 @@ class Arithmetic(Expression):
         temp = generator.addTemp()        
         operation = getArithmeticType(self.type)    # +, -, *, /
         
+        # concatenation
+        if left_value.type == Type.STRING and right_value.type == Type.STRING and operation == '*':
+            generator.fConcatenateStr()
+            param_temp = generator.addTemp()
+            generator.addExpression(param_temp, 'P', environment_.size, '+')
+            
+            # left_value
+            generator.addExpression(param_temp, param_temp, '1', '+')
+            generator.setStack(param_temp, left_value.value)
+            
+            # right_value
+            generator.addExpression(param_temp, param_temp, '1', '+')
+            generator.setStack(param_temp, right_value.value)            
+            
+            generator.newEnv(environment_.size)
+            generator.callFun('concatenateStr')
+            
+            temp = generator.addTemp()
+            generator.getStack(temp, 'P')
+            generator.retEnv(environment_.size)
+
+            # return
+            return Value(temp, Type.STRING, True)            
+        
         if self.type == ArithmeticType.DIV:
             label_true = generator.newLabel()
             label_false = generator.newLabel()
+            label_exit = generator.newLabel()
             
-            generator.addIf(right_value.value, '0', '!=', label_true)
+            generator.addIf(right_value.value, '0', '==', label_true)
+            generator.addGoto(label_false)
+            
+            generator.putLabel(label_true)            
             generator.printMathError()            
             generator.addExpression(temp, '0', '', '')
-            generator.addGoto(label_false)
-            generator.putLabel(label_true)
+            generator.addGoto(label_exit)
             
+            generator.putLabel(label_false)
             generator.addExpression(temp, left_value.value, right_value.value, operation)
             type_ = getTypeMatrix(left_value.type, right_value.type)
             
+            generator.putLabel(label_exit)
             
-            result =  Value(temp, type_, True)
-            result.false_label = label_false
-            
-            return result
+            return Value(temp, type_, True)            
         
         # POTENCY
         if self.type == ArithmeticType.POWER:
@@ -67,7 +93,7 @@ class Arithmetic(Expression):
             generator.retEnv(environment_.size)
 
             # return
-            return Value(temp, Type.INT, True)
+            return Value(temp, Type.INT64, True)
 
         generator.addExpression(temp, left_value.value, right_value.value, operation)
         type_ = getTypeMatrix(left_value.type, right_value.type)

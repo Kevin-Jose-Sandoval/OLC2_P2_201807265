@@ -4,9 +4,13 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-    println((55+3)/(3-3));
+    #a=(55+3)/(3-3);
+    #println(2^3);
+    #println((55+3)/(3-3));
     #println(uppercase("aa AA kevin Jose SANDOVAL"));
     
+    println("hola" * "mundo" * "HOLA" * "2018");
+    println(2^3);
     '''
     
     generator_aux = Generator()

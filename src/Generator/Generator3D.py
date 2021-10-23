@@ -19,6 +19,7 @@ class Generator:
         self.potency = False
         self.upperCase = False
         self.lowerCase = False
+        self.concatenateStr = False
 
     # ============ Code 3D
     def initialHeader(self):
@@ -82,6 +83,7 @@ class Generator:
         self.potency = False
         self.upperCase = False
         self.lowerCase = False        
+        self.concatenate = False
         
         Generator.generator = Generator()    
     
@@ -352,6 +354,61 @@ class Generator:
         self.nextHeap()
         self.setStack('P', t1)
         # end code        
+        
+        self.addEndFunc()
+        self.inNatives = False
+        
+    def fConcatenateStr(self):
+        if self.concatenateStr:
+            return
+        self.concatenateStr = True
+        self.inNatives = True
+
+        self.addBeginFunc('concatenateStr')
+        
+        # start code
+        t2 = self.addTemp()
+        t3 = self.addTemp()
+        t5 = self.addTemp()
+        t4 = self.addTemp()
+        
+        self.addExpression(t2, 'H', '', '')
+        self.addExpression(t3, 'P', '1', '+')
+        self.getStack(t5, t3)
+        self.addExpression(t4, 'P', '2', '+')
+        
+        L1 = self.newLabel()
+        L2 = self.newLabel()
+        
+        self.putLabel(L1)
+        t6 = self.addTemp()
+        self.getHeap(t6, t5)
+        
+        self.addIf(t6, '-1', '==', L2)
+        self.setHeap('H', t6)
+        self.nextHeap()
+        self.addExpression(t5, t5, '1', '+')
+        self.addGoto(L1)
+        
+        self.putLabel(L2)
+        self.getStack(t5, t4)
+        
+        L0 = self.newLabel()        
+        L3 = self.newLabel()
+        self.putLabel(L3)
+        self.getHeap(t6, t5)
+        
+        self.addIf(t6, '-1', '==', L0)
+        self.setHeap('H', t6)
+        self.nextHeap()
+        self.addExpression(t5, t5, '1', '+')
+        self.addGoto(L3)
+        
+        self.putLabel(L0)
+        self.setHeap('H', '-1')
+        self.nextHeap()
+        self.setStack('P', t2)
+        # end code
         
         self.addEndFunc()
         self.inNatives = False
