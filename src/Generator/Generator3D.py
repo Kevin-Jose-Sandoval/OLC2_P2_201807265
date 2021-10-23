@@ -21,6 +21,7 @@ class Generator:
         self.lowerCase = False
         self.concatenateStr = False
         self.repetitionStr = False
+        self.compareStr = False
 
     # ============ Code 3D
     def initialHeader(self):
@@ -86,6 +87,7 @@ class Generator:
         self.lowerCase = False        
         self.concatenate = False
         self.repetitionStr = False
+        self.compareStr = False
 
         Generator.generator = Generator()    
     
@@ -422,7 +424,7 @@ class Generator:
         self.inNatives = True
 
         self.addBeginFunc('repetitionStr')
-        
+                
         # ===== START CODE
         # 0 - return
         # 1 - string
@@ -479,5 +481,52 @@ class Generator:
         self.setStack('P', t0)        
         # ===== END CODE
 
+        self.addEndFunc()
+        self.inNatives = False
+
+    def fCompareStr(self):
+        if self.compareStr:
+            return
+        self.compareStr = True
+        self.inNatives = True
+
+        self.addBeginFunc('compareStr')
+        
+        # ===== START CODE        
+        t2 = self.addTemp()
+        self.addExpression(t2, 'P', '1', '+')
+        t3 = self.addTemp()
+        self.getStack(t3, t2)
+        self.addExpression(t2, t2, '1', '+')
+        t4 = self.addTemp()
+        self.getStack(t4, t2)
+        
+        L0 = self.newLabel()        
+        L1 = self.newLabel()
+        L2 = self.newLabel()
+        L3 = self.newLabel()
+        
+        self.putLabel(L1)
+        t5 = self.addTemp()
+        self.getHeap(t5, t3)
+        t6 = self.addTemp()
+        self.getHeap(t6, t4)
+        
+        self.addIf(t5, t6, '!=', L3)
+        self.addIf(t5, '-1', '==', L2)
+        self.addExpression(t3, t3, '1', '+')
+        self.addExpression(t4, t4, '1', '+')
+        self.addGoto(L1)
+        
+        self.putLabel(L2)
+        self.setStack('P', '1')
+        self.addGoto(L0)
+        
+        self.putLabel(L3)
+        self.setStack('P', '0')
+        
+        self.putLabel(L0)        
+        
+        # ===== END CODE
         self.addEndFunc()
         self.inNatives = False

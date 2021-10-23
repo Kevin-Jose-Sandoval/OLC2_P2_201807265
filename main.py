@@ -10,8 +10,8 @@ def compile():
     #println(uppercase("aa AA kevin Jose SANDOVAL"));
     
     #println("hola" * "mundo" * "HOLA" * "2018");
-    println("holaM"^3);
-    println("Terminó");
+    #println("holaM"^3);
+    println("ab" == "ab");
     
     '''
     

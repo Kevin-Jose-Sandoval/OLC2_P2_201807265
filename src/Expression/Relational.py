@@ -26,7 +26,7 @@ class Relational(Expression):
         if isinstance(left, Exception): return left
         
         right = None
-        
+
         result = Value(None, Type.BOOLEAN, False)
         
         if left.type != Type.BOOLEAN:
@@ -40,8 +40,47 @@ class Relational(Expression):
                 generator.addGoto(self.false_label)
                 
             elif left.type == Type.STRING and right.type == Type.STRING:
-                print("Comparación de cadenas")
-        
+                generator.fCompareStr()
+                param_temp = generator.addTemp()
+                generator.addExpression(param_temp, 'P', environment_.size, '+')
+                
+                # left_value -> string
+                generator.addExpression(param_temp, param_temp, '1', '+')
+                generator.setStack(param_temp, left.value)
+                
+                # right_value  -> string
+                generator.addExpression(param_temp, param_temp, '1', '+')
+                generator.setStack(param_temp, right.value)            
+                
+                generator.newEnv(environment_.size)
+                generator.callFun('compareStr')
+                
+                temp = generator.addTemp()
+                generator.getStack(temp, 'P')
+                generator.retEnv(environment_.size)
+                
+                # return
+                true_label = generator.newLabel()
+                false_label = generator.newLabel()
+                
+                if self.type == RelationalType.EQUAL_EQUAL:                
+                    generator.addIf(temp, '0', '==', false_label)
+                    generator.addGoto(true_label)
+                    
+                    result_ = Value(temp, Type.BOOLEAN, True)
+                    result_.true_label = true_label
+                    result_.false_label = false_label
+                    
+                    return result_
+                if self.type == RelationalType.DISTINCT:
+                    generator.addIf(temp, '0', '!=', false_label)
+                    generator.addGoto(true_label)
+                    
+                    result_ = Value(temp, Type.BOOLEAN, True)
+                    result_.true_label = true_label
+                    result_.false_label = false_label
+                    
+                    return result_        
         # left.type == BOOLEAN                
         else:
             goto_right = generator.newLabel()

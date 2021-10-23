@@ -25,7 +25,7 @@ class Arithmetic(Expression):
 
         temp = generator.addTemp()        
         operation = getArithmeticType(self.type)    # +, -, *, /
-
+        
         # repetition
         if  left_value.type == Type.STRING and right_value.type == Type.INT64 and self.type == ArithmeticType.POWER:
             generator.fRepetitionStr()
