@@ -11,18 +11,9 @@ from src.Instruction.Conditional.If import *
 from src.Instruction.Loops.While import *
 from src.Instruction.Loops.Break import *
 from src.Instruction.Loops.Continue import *
-
-"""
-from src.Instruction.Functions.Return import *
 from src.Instruction.Functions.Function import *
 from src.Instruction.Functions.Param import *
-from src.Instruction.Arrays.Array import *
-from src.Instruction.Arrays.AssignArray import *
-from src.Instruction.Loops.For import *
-from src.Instruction.Structs.DeclareStruct import *
-from src.Instruction.Structs.CreateStruct import *
-from src.Instruction.Structs.AssignAccess import * 
-"""
+from src.Instruction.Functions.Return import *
 
 # expressions
 from src.Expression.Arithmetic import *
@@ -32,15 +23,9 @@ from src.Expression.Logical import *
 from src.Expression.Access import *
 from src.Natives.UpperCase import *
 from src.Natives.LowerCase import *
-""" 
 from src.Expression.CallFunction import *
-from src.Natives.Mathematic import *
 from src.Natives.DataManagement import *
-from src.Expression.CallArray import *
-from src.Natives.NativeArray import *
-from src.Expression.WayIterate import *
-from src.Expression.AccessStruct import *
-"""
+
 
 errors = []
 
@@ -77,14 +62,6 @@ reserved_words = {
     # natives
     'println'   : 'PRINTLN',
     'print'     : 'PRINT',
-    
-    # native mathematics
-    'sqrt'      : 'SQUARE_ROOT',
-    'log10'     : 'LOG_10',
-    'log'       : 'LOG_N',
-    'sin'       : 'SIN',
-    'cos'       : 'COS',
-    'tan'       : 'TAN',
     'uppercase' : 'UPPER',
     'lowercase' : 'LOWER',
     
@@ -96,8 +73,6 @@ reserved_words = {
     'typeof'    : 'TYPE_OF',
     
     # natives arrays
-    'push'      : 'PUSH',
-    'pop'       : 'POP',
     'length'    : 'LENGTH',
     
     # for sentence
@@ -282,6 +257,10 @@ def p_instruction(t):
                 | while_st SEMICOLON
                 | break_st SEMICOLON
                 | continue_st SEMICOLON
+                
+                | declare_function_st SEMICOLON
+                | call_function_st SEMICOLON
+                | return_st SEMICOLON
     '''
     t[0] = t[1]
 
@@ -362,6 +341,93 @@ def p_continue_st(t):
     'continue_st : CONTINUE'
     t[0] = Continue(t.lineno(1), find_column(input_, t.slice[1]))
 
+# ------------------------------ FUNCTIONS
+def p_declaration_function_st(t):
+    '''
+    declare_function_st : FUNCTION ID LEFT_PAR RIGHT_PAR COLON COLON type statement END
+                        | FUNCTION ID LEFT_PAR declare_params RIGHT_PAR COLON COLON type statement END
+    '''
+    if len(t) == 7:
+        t[0] = Function(t[2], [], t[7], t[8], t.lineno(1), find_column(input_, t.slice[1]))
+    else:
+        t[0] = Function(t[2], t[4], t[8], t[9], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_declare_params(t):
+    '''
+    declare_params : declare_params COMMA ID COLON COLON type
+                   | ID COLON COLON type
+    '''
+    if len(t) == 5:
+        t[0] = [Param(t[1], t[4], t.lineno(1), find_column(input_, t.slice[1]))]
+    else:
+        t[1].append(Param(t[3], t[6], t.lineno(3), t.lexpos(3)))
+        t[0] = t[1]
+
+# ------------------------------ FUNCTION - CALL FUNCTION
+def p_call_function_st(t):
+    '''
+    call_function_st : ID LEFT_PAR RIGHT_PAR
+                     | ID LEFT_PAR expression_list RIGHT_PAR
+    '''
+    if len(t) == 4:
+        t[0] = CallFunction(t[1], [], t.lineno(1), find_column(input_, t.slice[1]))
+    else:
+        t[0] = CallFunction(t[1], t[3], t.lineno(1), find_column(input_, t.slice[1]))
+
+# ------------------------------ ACCESS EXPRESSION (FUNCTION, ARRAY, NATIVE_ARRAY)
+def p_expression_access(t):
+    '''
+    expression : call_function_st
+    '''
+    t[0] = t[1]
+
+# ------------------------------ RETURN
+def p_return_st(t):
+    '''
+    return_st : RETURN
+              | RETURN expression
+    '''
+    if len(t) == 2:
+        t[0] = Return(None, t.lineno(1), find_column(input_, t.slice[1]))
+    else:
+        t[0] = Return(t[2], t.lineno(1), find_column(input_, t.slice[1]))
+
+# ------------------------------ TYPES
+def p_type(t):
+    '''
+    type : TYPE_INT64
+         | TYPE_FLOAT64
+         | TYPE_BOOL
+         | TYPE_CHAR
+         | TYPE_STRING
+         | TYPE_NOTHING         
+    '''
+
+    if t[1] == 'Int64':
+        t[0] = Type.INT64
+    elif t[1] == 'Float64':
+        t[0] = Type.FLOAT64
+    elif t[1] == 'Bool':
+        t[0] = Type.BOOLEAN
+    elif t[1] == 'Char':
+        t[0] = Type.CHAR
+    elif t[1] == 'String':
+        t[0] = Type.STRING
+    elif t[1] == 'Nothing':
+        t[0] = Type.NULL                
+
+# ------------------------------ LIST EXPRESSIONS
+def p_expression_list(t):
+    '''
+    expression_list : expression_list COMMA expression
+                    | expression
+    '''
+    if len(t) == 2:
+        t[0] = [t[1]]
+    else:
+        t[1].append(t[3])
+        t[0] = t[1]
+
 # ------------------------------ EXPRESSIONS
 def p_expression(t):
     '''
@@ -437,6 +503,22 @@ def p_expression_uppercase(t):
 def p_expression_lowercase(t):
     'expression : LOWER LEFT_PAR expression RIGHT_PAR'
     t[0] = LowerCase(t[3], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_expression_trunc(t):
+    'expression : TRUNC LEFT_PAR expression RIGHT_PAR'
+    t[0] = DataManagement(TypeNative.TRUNC, t[3], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_expression_float(t):
+    'expression : FLOAT LEFT_PAR expression RIGHT_PAR'
+    t[0] = DataManagement(TypeNative.FLOAT, t[3], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_expression_string(t):
+    'expression : STRING LEFT_PAR expression RIGHT_PAR'
+    t[0] = DataManagement(TypeNative.STRING, t[3], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_expression_parse_string(t):
+    'expression : PARSE LEFT_PAR type COMMA expression RIGHT_PAR'
+    t[0] = DataManagement(TypeNative.PARSE, t[5], t.lineno(1), find_column(input_, t.slice[1]), t[3])
 
 # ------------------------------ EXPRESSIONS - PRIMITIVES
 def p_primitive_int(t):

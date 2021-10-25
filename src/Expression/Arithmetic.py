@@ -38,11 +38,11 @@ class Arithmetic(Expression):
             
             # right_value
             generator.addExpression(param_temp, param_temp, '1', '+')
-            generator.setStack(param_temp, right_value.value)            
+            generator.setStack(param_temp, right_value.value)
             
             generator.newEnv(environment_.size)
             generator.callFun('repetitionStr')
-            
+
             temp = generator.addTemp()
             generator.getStack(temp, 'P')
             generator.retEnv(environment_.size)

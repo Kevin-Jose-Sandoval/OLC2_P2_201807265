@@ -128,7 +128,10 @@ class Generator:
     # ============ INSTRUCTIONS
     def addPrint(self, type_, value_):
         self.codeIn(f'fmt.Printf("%{type_}", int({value_}));\n')
-        
+
+    def addPrintFloat(self, type_, value_):
+        self.codeIn(f'fmt.Printf("%{type_}", float64({value_}));\n')
+
     def printTrue(self):
         self.addPrint("c", 116)
         self.addPrint("c", 114)

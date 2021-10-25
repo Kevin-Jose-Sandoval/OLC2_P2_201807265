@@ -11,7 +11,8 @@ class Environment:
         self.size = 0
         self.break_label = ''
         self.continue_label = ''
-        
+        self.return_label = ''
+
         if previous is not None:
             self.size = self.previous.size
             self.break_label = self.previous.break_label
@@ -50,6 +51,7 @@ class Environment:
     
     def saveFunction(self, id_function_, function_):
         if id_function_ in self.functions.keys():
+            print("Funcion repetida < "+ str(id_function_) + " >")
             return True
         else:
             self.functions[id_function_] = function_
