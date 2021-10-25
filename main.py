@@ -4,11 +4,17 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-    println(parse(Int64, "45.50"));
-    println(parse(Int64, "1.25"));
-    
-    println(parse(Float64, "10"));
-    println(parse(Float64, "45"));
+    a = [
+    1,2,3,4,5,
+    [
+        50,60,[80]
+    ],
+    [
+        [
+        100,200,[5000]
+        ]
+    ]
+    ];
     '''
     
     generator_aux = Generator()

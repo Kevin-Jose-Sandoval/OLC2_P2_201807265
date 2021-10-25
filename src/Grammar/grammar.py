@@ -14,6 +14,8 @@ from src.Instruction.Loops.Continue import *
 from src.Instruction.Functions.Function import *
 from src.Instruction.Functions.Param import *
 from src.Instruction.Functions.Return import *
+from src.Instruction.Loops.For import *
+from src.Instruction.Arrays.Array import *
 
 # expressions
 from src.Expression.Arithmetic import *
@@ -25,6 +27,7 @@ from src.Natives.UpperCase import *
 from src.Natives.LowerCase import *
 from src.Expression.CallFunction import *
 from src.Natives.DataManagement import *
+from src.Expression.WayIterate import *
 
 
 errors = []
@@ -255,6 +258,7 @@ def p_instruction(t):
                 | if_st SEMICOLON
                 
                 | while_st SEMICOLON
+                | for_st SEMICOLON
                 | break_st SEMICOLON
                 | continue_st SEMICOLON
                 
@@ -331,6 +335,31 @@ def p_while_st(t):
     'while_st : WHILE expression statement END'
     t[0] = While(t[2], t[3], t.lineno(1), find_column(input_, t.slice[1]))
 
+# ------------------------------ FOR
+def p_for_st(t):
+    # for ID in ways_iterate
+    '''
+    for_st : FOR ID IN ways_iterate statement END
+    '''
+    t[0] = For(t[2], t[4], t[5], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_for_rank(t):
+    # 4 : 5
+    'ways_iterate : expression COLON expression'
+    t[0] = WayIterate(t[1], t[3], TypeIteration.RANK, t.lineno(1), 0)
+
+def p_for_string(t):
+    'ways_iterate : PRIMITIVE_STRING'
+    t[0] = WayIterate(t[1], None, TypeIteration.STRING, t.lineno(1), 0)
+    
+def p_for_ID(t):
+    'ways_iterate : ID'
+    t[0] = WayIterate(t[1], None, TypeIteration.ID, t.lineno(1), 0)
+
+def p_for_direct_array(t):
+    'ways_iterate : LEFT_BRACKET expression_list RIGHT_BRACKET'
+    t[0] = WayIterate(t[2], None, TypeIteration.ARRAY, t.lineno(1), 0)
+
 # ------------------------------ BREAK
 def p_break_st(t):
     'break_st : BREAK'
@@ -373,6 +402,12 @@ def p_call_function_st(t):
         t[0] = CallFunction(t[1], [], t.lineno(1), find_column(input_, t.slice[1]))
     else:
         t[0] = CallFunction(t[1], t[3], t.lineno(1), find_column(input_, t.slice[1]))
+
+# ------------------------------ ARRAYS
+#  DECLARATION ARRAY
+def p_expression_array(t):
+    'expression : LEFT_BRACKET expression_list RIGHT_BRACKET'
+    t[0] = Array(t[2], t.lineno(1), find_column(input_, t.slice[1]), len(t[2]))
 
 # ------------------------------ ACCESS EXPRESSION (FUNCTION, ARRAY, NATIVE_ARRAY)
 def p_expression_access(t):
