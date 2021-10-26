@@ -17,7 +17,7 @@ class Logical(Expression):
         generator = generator_aux.getInstance()
         
         generator.addSpace()                    
-        generator.addComment("--- Inicio < Logica >  ---")        
+        generator.addComment("--- Inicio < Logica >  ---")
                 
         self.checkLabels()
         label_union = ''

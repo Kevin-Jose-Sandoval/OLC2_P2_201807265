@@ -28,6 +28,7 @@ from src.Natives.LowerCase import *
 from src.Expression.CallFunction import *
 from src.Natives.DataManagement import *
 from src.Expression.WayIterate import *
+from src.Expression.CallArray import *
 
 
 errors = []
@@ -265,6 +266,8 @@ def p_instruction(t):
                 | declare_function_st SEMICOLON
                 | call_function_st SEMICOLON
                 | return_st SEMICOLON
+                
+                | call_array_st SEMICOLON
     '''
     t[0] = t[1]
 
@@ -408,11 +411,36 @@ def p_call_function_st(t):
 def p_expression_array(t):
     'expression : LEFT_BRACKET expression_list RIGHT_BRACKET'
     t[0] = Array(t[2], t.lineno(1), find_column(input_, t.slice[1]), len(t[2]))
+    
+# ACCESS ARRAY
+def p_expression_call_array(t):
+    # ID dimension_list
+    'call_array_st : ID dimension_list'
+    t[0] = CallArray(t[1], t[2], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_array_dimension_list(t):
+    # [expression][expression][expression]...
+    '''
+    dimension_list : dimension_list position
+                   | position
+    '''
+    if len(t) == 2:
+        t[0] = [t[1]]
+    else:
+        t[1].append(t[2])
+        t[0] = t[1]
+
+def p_position(t):
+    '''
+    position : LEFT_BRACKET expression RIGHT_BRACKET
+    '''
+    t[0] = t[2]
 
 # ------------------------------ ACCESS EXPRESSION (FUNCTION, ARRAY, NATIVE_ARRAY)
 def p_expression_access(t):
     '''
     expression : call_function_st
+               | call_array_st
     '''
     t[0] = t[1]
 
