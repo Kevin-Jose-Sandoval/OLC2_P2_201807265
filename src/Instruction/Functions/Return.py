@@ -1,5 +1,4 @@
 from src.Generator.Generator3D import Generator
-from src.SymbolTable.Exception import *
 from src.Abstract.Expression import *
 from src.SymbolTable.Types import *
 
@@ -10,13 +9,12 @@ class Return(Expression):
         self.expression = expression_
         
     def compile(self, environment_):
-        
-        if environment_.return_label == '':
-            print("RETURN no está en una función")
-            return Exception("RETURN no está en una función", self.line, self.column)            
-
         generator_aux = Generator()
         generator = generator_aux.getInstance()
+                
+        if environment_.return_label == '':
+            generator.addError('La instrucción RETURN no está en una función', self.line, self.column)
+            return
         
         value = self.expression.compile(environment_)
         

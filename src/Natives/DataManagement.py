@@ -1,7 +1,7 @@
 from src.Generator.Generator3D import Generator
 from src.Abstract.Expression import *
-from src.Abstract.Value import *
 from src.SymbolTable.Types import *
+from src.Abstract.Value import *
 
 class DataManagement(Expression):
     

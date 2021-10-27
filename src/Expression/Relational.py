@@ -1,8 +1,7 @@
 from src.Generator.Generator3D import Generator
 from src.Abstract.Expression import *
-from src.Abstract.Value import *
-from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import *
+from src.Abstract.Value import *
 
 class Relational(Expression):
     '''
@@ -31,8 +30,6 @@ class Relational(Expression):
         
         if left.type != Type.BOOLEAN:
             right = self.right.compile(environment_)
-            
-            if isinstance(right, Exception): return right
             
             if (left.type == Type.INT64 or left.type == Type.FLOAT64) and (right.type == Type.INT64 or right.type == Type.FLOAT64):
                 self.checkLabels()
@@ -97,7 +94,8 @@ class Relational(Expression):
             
             right = self.right.compile(environment_)
             if right.type != Type.BOOLEAN:
-                return Exception('Relacional: El operando derecho debe ser de tipo BOOLEAN', self.line, self.column)
+                generator.addError('Relacional: El operando derecho debe ser de tipo BOOLEAN', self.line, self.column)
+                return
             
             goto_end = generator.newLabel()
             right_temp = generator.addTemp()
@@ -120,9 +118,7 @@ class Relational(Expression):
                 
         result.true_label = self.true_label
         result.false_label = self.false_label
-        
         return result
-            
                 
     def checkLabels(self):
         generator_aux = Generator()

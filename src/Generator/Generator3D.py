@@ -1,3 +1,5 @@
+from src.SymbolTable.Exception import *
+
 # Add C3D
 class Generator:
     generator = None
@@ -14,6 +16,7 @@ class Generator:
         self.inNatives = False
         # temporary list
         self.temps = []
+        self.errors = []
         # natives list
         self.printString = False
         self.potency = False
@@ -22,6 +25,8 @@ class Generator:
         self.concatenateStr = False
         self.repetitionStr = False
         self.compareStr = False
+        
+        self.list_aux = []
 
     # ============ Code 3D
     def initialHeader(self):
@@ -56,6 +61,7 @@ class Generator:
             
         else:
             self.code = self.code + '\t' +  code_    
+    
     # ============ Auxiliary functions
     def addComment(self, comment_):
         self.codeIn(f'/* {comment_} */\n')
@@ -80,6 +86,7 @@ class Generator:
         self.inNatives = False
         # temporary list
         self.temps = []
+        self.errors = []        
         # natives list
         self.printString = False
         self.potency = False
@@ -90,7 +97,10 @@ class Generator:
         self.compareStr = False
 
         Generator.generator = Generator()    
-    
+
+    def addError(self, message_, line_, column_):
+        self.errors.append(Exception(message_, line_, column_))
+
     # ============ Temporary - label - goto - expression - if
     def addTemp(self):
         temp = f't{self.count_temp}'

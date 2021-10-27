@@ -2,7 +2,6 @@ from src.Generator.Generator3D import Generator
 from src.Abstract.Expression import *
 from src.SymbolTable.Types import *
 from src.Abstract.Value import *
-from src.SymbolTable.Exception import *
 
 class Access(Expression):
     
@@ -18,8 +17,8 @@ class Access(Expression):
         var = environment_.getVar(self.id)
         
         if var is None:
-            print("No existe la variable < "+ str(self.id) +" >")            
-            return Exception("No existe la variable < "+ str(self.id) +" >", self.line, self.column)
+            generator.addError(f'No existe la variable < {self.id} >', self.line, self.column)
+            return
         
         # temporary to save variable
         temp = generator.addTemp()

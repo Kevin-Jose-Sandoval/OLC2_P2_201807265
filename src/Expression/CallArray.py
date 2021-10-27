@@ -2,6 +2,7 @@ from src.Generator.Generator3D import Generator
 from src.Abstract.Expression import *
 from src.SymbolTable.Types import *
 from src.Abstract.Value import *
+from src.SymbolTable.Exception import *
 
 class CallArray(Expression):
     
@@ -15,12 +16,14 @@ class CallArray(Expression):
         generator = generator_aux.getInstance()
 
         variable = environment_.getVar(self.id)
-        a = generator.addTemp()
         
         if variable is None:
-            print(f'La variable < {self.id} > No existe')
+            generator.addError(f'La variable < {self.id} > No existe', self.line, self.column)
             return
-        
+        if variable.type != Type.ARRAY:
+            generator.addError(f'La variable < {self.id} > No es de tipo ARRAY', self.line, self.column)
+            return
+
         generator.addComment(f'--- Inicio < CallArray "{self.id}" >  ---')
         
         temp_move = generator.addTemp()
@@ -36,9 +39,9 @@ class CallArray(Expression):
             
             generator.addExpression(temp_move, temp_move, index, '+')
             generator.getHeap(temp_result, temp_move)
-            
+
             return Value(temp_result, Type.INT64, True)
-        
+
         else:
             temp_aux = generator.addTemp()
             
@@ -59,6 +62,3 @@ class CallArray(Expression):
             generator.addComment("--- Fin < CallArray >  ---")
             
             return Value(temp_result, Type.INT64, True)
-                
-                
-                

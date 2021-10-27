@@ -14,6 +14,10 @@ class Print(Instruction):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
         
+        if value is None:
+            generator.addError(f'Print no puede imprimir None', self.line, self.column)
+            return            
+        
         if value.type == Type.INT64:
             generator.addPrint("d", value.value)
 

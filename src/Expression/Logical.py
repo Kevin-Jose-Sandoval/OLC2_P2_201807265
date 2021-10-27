@@ -1,8 +1,7 @@
 from src.Generator.Generator3D import Generator
 from src.Abstract.Expression import *
-from src.Abstract.Value import *
-from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import *
+from src.Abstract.Value import *
 
 class Logical(Expression):
     
@@ -38,10 +37,10 @@ class Logical(Expression):
             self.left.false_label = self.true_label
         
         left = self.left.compile(environment_)
-        if isinstance(left, Exception): return left
                 
         if left.type != Type.BOOLEAN:
-            return Exception('Logica: El operando izquierdo debe ser de tipo BOOLEAN', self.line, self.column)
+            generator.addError('Logica: El operando izquierdo debe ser de tipo BOOLEAN', self.line, self.column)
+            return
         
         if self.type != LogicalType.NOT:
             generator.putLabel(label_union)
@@ -50,7 +49,8 @@ class Logical(Expression):
             if isinstance(right, Exception): return right            
             
             if right.type != Type.BOOLEAN:
-                return Exception('Logica: El operando derecho debe ser de tipo BOOLEAN', self.line, self.column)
+                generator.addError('Logica: El operando derecho debe ser de tipo BOOLEAN', self.line, self.column)
+                return
         
         generator.addComment("--- Fin < Logica >  ---")        
         generator.addSpace()

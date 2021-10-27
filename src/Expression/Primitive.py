@@ -15,7 +15,7 @@ class Primitive(Expression):
         generator = generator_aux.getInstance()
                 
         if self.type == Type.INT64 or self.type == Type.FLOAT64:
-            return Value(str(self.value), self.type, False)
+            return Value(self.value, self.type, False)
         
         elif self.type == Type.BOOLEAN:
             self.checkLabels()

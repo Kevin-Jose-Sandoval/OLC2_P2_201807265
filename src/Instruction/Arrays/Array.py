@@ -25,14 +25,13 @@ class Array(Instruction):
         generator.setHeap('H', len(self.expressions_list) )     # save array size
         generator.addExpression('H', 'H', self.size + 1, '+')
 
-
-        for expression in self.expressions_list:
+        for expression in self.expressions_list:            
             value = expression.compile(environment_)
             
             generator.setHeap(temp_move, value.value)            
-            generator.addExpression(temp_move, temp_move, '1', '+')            
+            generator.addExpression(temp_move, temp_move, '1', '+')
 
-        generator.addComment("--- Fin < Guardar Array >  ---")            
+        generator.addComment("--- Fin < Guardar Array >  ---")
         return Value(temp, Type.ARRAY, True)
 
 

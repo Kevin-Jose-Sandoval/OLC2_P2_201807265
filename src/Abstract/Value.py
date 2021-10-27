@@ -6,3 +6,5 @@ class Value:
         self.aux_type = aux_type
         self.true_label = ''
         self.false_label = ''
+        
+        self.values_list = []
