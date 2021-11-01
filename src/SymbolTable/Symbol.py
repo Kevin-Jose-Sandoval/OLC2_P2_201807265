@@ -7,3 +7,5 @@ class Symbol:
         self.pos = position_
         self.isGlobal = is_global_
         self.inHeap = in_heap_
+        
+        self.type_array = None

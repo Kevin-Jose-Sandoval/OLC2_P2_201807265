@@ -5,13 +5,12 @@ from src.SymbolTable.Environment import *
 def compile():
     input_ = '''
 a = "pa";
-c = "hola";
-b = [ 10, 25, [ 50, 60, [80] ], [ [100,200,[5000, 10000] ] ] ];
+b = [ 1,2,3,4,5,[10] ];
 
-#println(b[2]);
+println(b[8][1]);
 
 #println(b[3][3][1]);
-println(b[1+1+1][2+1+5][1]);
+#println(b[1+1+1][2+1+5][1]);
     '''
     
     generator_aux = Generator()

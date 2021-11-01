@@ -25,6 +25,8 @@ class Declaration(Instruction):
             in_heap = (value.type == Type.STRING or value.type == Type.STRUCT)
             new_var = environment_.saveVar(self.id, value.type, in_heap)
         new_var.type = value.type
+        if value.type == Type.ARRAY:
+            new_var.type_array = value.type_array
         
         # get position of variable: space where it is 
         temp_pos = new_var.pos

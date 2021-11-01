@@ -8,7 +8,7 @@ class Value:
         self.false_label = ''
         
         self.values_array = []
-        self.boundsError = False
+        self.type_array = None        
         
     def getValuesArray(self):
         return self.values_array

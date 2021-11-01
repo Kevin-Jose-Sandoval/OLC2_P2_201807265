@@ -62,13 +62,13 @@ class CallArray(Expression):
             # Save upper limit to BoundsError
             generator.getStack(initial_size, variable.pos)
             self.getUpperLimit(initial_size)
-            self.verifBoundsError(auxiliar_index, self.upper_limit, temp_result)            
+            self.verifyBoundsError(auxiliar_index, self.upper_limit, temp_result)            
             
             generator.addExpression(temp_move, temp_move, auxiliar_index, '+')
             generator.getHeap(temp_result, temp_move)
             
             generator.putLabel(self.exit_label)
-            return Value(temp_result, Type.INT64, True)
+            return Value(temp_result, variable.type_array, True)
 
         else:
             temp_aux = generator.addTemp()
@@ -95,7 +95,7 @@ class CallArray(Expression):
                     # Save upper limit to BoundsError
                     generator.getStack(initial_size, variable.pos)
                     self.getUpperLimit(initial_size)
-                    self.verifBoundsError(auxiliar_index, self.upper_limit, temp_result)
+                    self.verifyBoundsError(auxiliar_index, self.upper_limit, temp_result)
                     continue
 
                 temp_move = generator.addTemp()                
@@ -103,7 +103,7 @@ class CallArray(Expression):
                 
                 # Save upper limit to BoundsError
                 self.getUpperLimit(temp_move)
-                self.verifBoundsError(auxiliar_index, self.upper_limit, temp_result)
+                self.verifyBoundsError(auxiliar_index, self.upper_limit, temp_result)
 
                 generator.addExpression(temp_move, temp_move, auxiliar_index, '+')
                 
@@ -111,7 +111,7 @@ class CallArray(Expression):
             generator.addComment("--- Fin < CallArray >  ---")
             
             generator.putLabel(self.exit_label)
-            return Value(temp_result, Type.INT64, True)
+            return Value(temp_result, variable.type_array, True)
         
     def getUpperLimit(self, temp_move_):
         generator_aux = Generator()
@@ -121,7 +121,7 @@ class CallArray(Expression):
         generator.addExpression(aux, temp_move_, '', '')
         self.upper_limit = aux
         
-    def verifBoundsError(self, index_, upperLimit_, temp_result_):
+    def verifyBoundsError(self, index_, upperLimit_, temp_result_):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
                 
