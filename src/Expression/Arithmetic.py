@@ -26,6 +26,11 @@ class Arithmetic(Expression):
         temp = generator.addTemp()        
         operation = getArithmeticType(self.type)    # +, -, *, /
         
+        if self.type == ArithmeticType.MOD:
+            generator.addOperationMod(temp, left_value.value, right_value.value)
+            type_ = getTypeMatrix(left_value.type, right_value.type)
+        
+            return Value(temp, type_, True) 
         # repetition
         if  left_value.type == Type.STRING and right_value.type == Type.INT64 and self.type == ArithmeticType.POWER:
             generator.fRepetitionStr()

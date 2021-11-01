@@ -30,7 +30,7 @@ class Generator:
 
     # ============ Code 3D
     def initialHeader(self):
-        header = '/*----- HEADER -----*/\npackage main;\n\nimport (\n\t"fmt"\n)\n\n'
+        header = '/*----- HEADER -----*/\npackage main;\n\nimport (\n\t"fmt";\n)\n\n'
 
         if len(self.temps) > 0:
             header += 'var '
@@ -134,7 +134,10 @@ class Generator:
         self.codeIn('return;\n}\n');
         if not self.inNatives:
             self.inFunc = False
-          
+    
+    def addOperationMod(self, result_, left_, right_):
+        self.codeIn(f'{result_}=math.Mod({left_},{right_});\n')
+        
     # ============ INSTRUCTIONS
     def addPrint(self, type_, value_):
         self.codeIn(f'fmt.Printf("%{type_}", int({value_}));\n')
@@ -165,7 +168,32 @@ class Generator:
         self.addPrint("c", 114)     # r
         self.addPrint("c", 111)     # o
         self.addPrint("c", 114)     # r
+
+    def printBoundsError(self):
+        self.addPrint("c", 66)     # B
+        self.addPrint("c", 111)    # o
+        self.addPrint("c", 117)    # u
+        self.addPrint("c", 110)    # n
+        self.addPrint("c", 100)    # d
+        self.addPrint("c", 115)    # s
+        self.addPrint("c", 69)     # E
+        self.addPrint("c", 114)    # r
+        self.addPrint("c", 114)    # r
+        self.addPrint("c", 111)    # o
+        self.addPrint("c", 114)    # r
+        self.addPrint("c", 10)
+
+    def printValueHeap(self, temp_move_):
+        self.codeIn(f'\n\tfmt.Printf("%d", int(heap[int({temp_move_})]));')
+        self.codeIn('\n\tfmt.Printf("%c", int(10));\n') 
+
+    def printValueStack(self, temp_move_):
+        self.codeIn(f'\n\tfmt.Printf("%d", int(stack[int({temp_move_})]));')
+        self.codeIn('\n\tfmt.Printf("%c", int(10));\n') 
         
+    def getValueHeap(self, place_, pos_):
+        self.codeIn(f'{place_}=int(heap[int({pos_})])')
+
     # ============ STACK
     def setStack(self, pos_, value_):
         # stack[int(pos_)] = value_

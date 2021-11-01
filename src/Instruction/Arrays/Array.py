@@ -9,6 +9,7 @@ class Array(Instruction):
         Instruction.__init__(self, line_, column_)
         self.expressions_list = list_expr_
         self.size = size_
+        self.values_list = []
         
     def compile(self, environment_):
         generator_aux = Generator()
@@ -30,7 +31,14 @@ class Array(Instruction):
             
             generator.setHeap(temp_move, value.value)            
             generator.addExpression(temp_move, temp_move, '1', '+')
+            
+            if value.type == Type.ARRAY:
+                self.values_list.append(value.getValuesArray())
+            else:     
+                self.values_list.append(value.value)
 
+        generator.list_aux.append(self.values_list)
+        
         generator.addComment("--- Fin < Guardar Array >  ---")
         return Value(temp, Type.ARRAY, True)
 

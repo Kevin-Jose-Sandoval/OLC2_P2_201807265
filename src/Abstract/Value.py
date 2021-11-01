@@ -7,4 +7,8 @@ class Value:
         self.true_label = ''
         self.false_label = ''
         
-        self.values_list = []
+        self.values_array = []
+        self.boundsError = False
+        
+    def getValuesArray(self):
+        return self.values_array

@@ -18,7 +18,7 @@ class Declaration(Instruction):
         # id = value
         value = self.value.compile(environment_)
         generator.addComment("--- Fin < Compilar valor de variable > ---")
-        
+
         # checking if it is in the heap -> saveVar(id_var_, type_, in_heap_)
         new_var = environment_.getVar(self.id)
         if new_var is None:
