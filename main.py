@@ -5,9 +5,13 @@ from src.SymbolTable.Environment import *
 def compile():
     input_ = '''
 a = "pa";
-b = [ 1,2,3,4,5,[10] ];
+b = [ "aa", "bb", "cc",["hh", "zz"] ];
 
-println(b[8][1]);
+println(b[4][2]);
+b[4][2] = "holaMundo";
+println(b[4][2]);
+
+
 
 #println(b[3][3][1]);
 #println(b[1+1+1][2+1+5][1]);

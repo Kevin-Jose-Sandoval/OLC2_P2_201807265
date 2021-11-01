@@ -16,6 +16,7 @@ from src.Instruction.Functions.Param import *
 from src.Instruction.Functions.Return import *
 from src.Instruction.Loops.For import *
 from src.Instruction.Arrays.Array import *
+from src.Instruction.Arrays.AssignArray import *
 
 # expressions
 from src.Expression.Arithmetic import *
@@ -268,6 +269,7 @@ def p_instruction(t):
                 | return_st SEMICOLON
                 
                 | call_array_st SEMICOLON
+                | assign_array_st SEMICOLON
     '''
     t[0] = t[1]
 
@@ -443,6 +445,11 @@ def p_expression_access(t):
                | call_array_st
     '''
     t[0] = t[1]
+
+# ------------------------------ ASSIGN ARRAY
+def p_assign_array_st(t):
+    'assign_array_st : ID dimension_list EQUAL expression'
+    t[0] = AssignArray(t[1], t[2], t[4], t.lineno(1), find_column(input_, t.slice[1]))
 
 # ------------------------------ RETURN
 def p_return_st(t):
