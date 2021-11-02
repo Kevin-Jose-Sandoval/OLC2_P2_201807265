@@ -4,19 +4,13 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-a = "pa";
-b = [ "aa", "bb", "cc",["hh", "zz"] ];
-
-println(b[4][2]);
-b[4][2] = "holaMundo";
-println(b[4][2]);
-
-
-
-#println(b[3][3][1]);
-#println(b[1+1+1][2+1+5][1]);
+    a = 100;
+for letra in "Hola Mundo!"
+    println(letra);
+end;
+ 
     '''
-    
+
     generator_aux = Generator()
     generator_aux.cleanAll()
     generator = generator_aux.getInstance()

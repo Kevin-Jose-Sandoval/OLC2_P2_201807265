@@ -1,3 +1,4 @@
+from src.Generator.Generator3D import Generator
 from src.Abstract.Expression import *
 from src.SymbolTable.Types import *
 from src.Abstract.Value import *
@@ -11,6 +12,8 @@ class WayIterate(Expression):
         self.type_iteration = type_iteration_
         
     def compile(self, environment_):
+        generator_aux = Generator()
+        generator = generator_aux.getInstance()
 
         # expression1 : expression2
         if self.type_iteration == TypeIteration.RANK:
@@ -22,3 +25,21 @@ class WayIterate(Expression):
             aux_list.append(value2)
             
             return aux_list, TypeIteration.RANK
+        
+        elif self.type_iteration == TypeIteration.STRING:
+            
+            return self.expression1
+        '''
+            # ret_temp: value in heap (free value in heap )
+            ret_temp = generator.addTemp()
+            generator.addExpression(ret_temp, 'H', '', '')
+
+            for char in str(self.expression1):
+                generator.setHeap('H', ord(char))
+                generator.nextHeap()
+
+            generator.setHeap('H', '-1')
+            generator.nextHeap()
+
+            return Value(ret_temp, Type.STRING, True)
+        '''
