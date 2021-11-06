@@ -37,13 +37,13 @@ class Declaration(Instruction):
             
         if value.type == Type.BOOLEAN:
             temp_label = generator.newLabel()
-            
+
             # where is True, save 1
             generator.putLabel(value.true_label)
             generator.setStack(temp_pos, "1")
-            
+
             generator.addGoto(temp_label)
-            
+
             # where is False, save 0
             generator.putLabel(value.false_label)
             generator.setStack(temp_pos, "0")
@@ -51,4 +51,4 @@ class Declaration(Instruction):
             generator.putLabel(temp_label)
         else:
             generator.setStack(temp_pos, value.value)
-        generator.addSpace()            
+        generator.addSpace()

@@ -2,6 +2,7 @@ from src.Generator.Generator3D import Generator
 from src.Abstract.Expression import *
 from src.SymbolTable.Types import *
 from src.Abstract.Value import *
+from src.Instruction.Arrays.Array import *
 
 class WayIterate(Expression):
     
@@ -29,17 +30,11 @@ class WayIterate(Expression):
         elif self.type_iteration == TypeIteration.STRING:
             
             return self.expression1
-        '''
-            # ret_temp: value in heap (free value in heap )
-            ret_temp = generator.addTemp()
-            generator.addExpression(ret_temp, 'H', '', '')
+        
+        elif self.type_iteration == TypeIteration.ARRAY:
 
-            for char in str(self.expression1):
-                generator.setHeap('H', ord(char))
-                generator.nextHeap()
-
-            generator.setHeap('H', '-1')
-            generator.nextHeap()
-
-            return Value(ret_temp, Type.STRING, True)
-        '''
+            array = Array(self.expression1, self.line, self.column, len(self.expression1))
+            value = array.compile(environment_)
+            
+            # value is a temporary where the array begins
+            return value

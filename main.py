@@ -4,22 +4,11 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-    a = 24;
-    b = "Hola";
-for i in 0:9
-
-    output = "";
-    for j in 0:(10 - i)
-        output = output * " ";
+    a = 500;
+    b = "AAA";
+    for i in [10,20,30,40,50]
+        println(i);
     end;
-
-    for k in 0:i 
-        output = output * "* ";
-    end;
-    println(output);
-
-end;
- 
     '''
 
     generator_aux = Generator()
