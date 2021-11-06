@@ -38,3 +38,21 @@ class WayIterate(Expression):
             
             # value is a temporary where the array begins
             return value
+
+        elif self.type_iteration == TypeIteration.ID:
+            # can be a STRING or ARRAY
+            
+            # found a position where is start
+            position = generator.addTemp()
+            variable = environment_.getVar(str(self.expression1))
+            generator.getStack(position, variable.pos)
+            
+            if variable.type == Type.ARRAY:
+                result = Value(position, variable.type, True)
+                result.type_array = variable.type_array
+                
+                return result
+            
+            if variable.type == Type.STRING:
+                
+                return Value(position, variable.type, True)
