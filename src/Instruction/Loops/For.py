@@ -15,8 +15,6 @@ class For(Instruction):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
         generator.addComment("--- Inicio < For >  ---")
-
-
         
         if self.way_iterate.type_iteration == TypeIteration.RANK:
             # save var
@@ -29,66 +27,49 @@ class For(Instruction):
             expression1 = list_expressions[0]
             expression2 = list_expressions[1]
 
-            # getting ID and initializing the symbol value            
+            # getting ID          
             variable = environment_.getVar(self.id)
 
             # get position of variable
             temp_pos = variable.pos
             if not variable.isGlobal:
                 temp_pos = generator.addTemp()
-                # temp_pos = P + position
-                generator.addExpression(temp_pos, 'P', variable.pos, "+")            
+                generator.addExpression(temp_pos, 'P', variable.pos, "+")
+            
+            # initializing the symbol value
             generator.setStack(temp_pos, expression1.value)
 
-            # START FOR
-            for i in range(int(expression1.value), int(expression2.value) + 1):
-                # updating ID                
-                generator.setStack(temp_pos, i)                
-                result = self.instructions.compile(environment_)
-                
-            # END FOR
-        
-        elif self.way_iterate.type_iteration == TypeIteration.STRING:
-            # save var
-            var = environment_.saveVar(self.id, Type.STRING, False)
-                    
-            value = self.way_iterate.compile(environment_) # temporary
-            temp = self.saveInHeap(value)
-            # getting ID          
-            variable = environment_.getVar(self.id)
-            
-            # get position of variable and initialize
-            temp_pos = variable.pos
-            if not variable.isGlobal:
-                temp_pos = generator.addTemp()
-                generator.addExpression(temp_pos, 'P', variable.pos, "+")            
-            generator.setStack(temp_pos, temp.value)
+            # ------ CYCLE
+            start = generator.newLabel()
+            label_true = generator.newLabel()
+            exit = generator.newLabel()
 
-            temp_move = generator.addTemp()
-            generator.addExpression(temp_move, temp_pos, '', '')
-            
-            for i in range(0, len(value)):
-                generator.addExpression(temp_move, temp_move, '1', '+')
-                temp = self.saveInHeap(value[i])
+            t1 = generator.addTemp()
+            t2 = generator.addTemp()
+            t3 = generator.addTemp()
+            t4 = generator.addTemp()
+            t5 = generator.addTemp()
 
-                generator.setStack(temp_pos, temp.value)                
-                result = self.instructions.compile(environment_)
+            # ------ cycle start
+            generator.putLabel(start)
+            
+            generator.addExpression(t2, 'P', temp_pos, '+')
+            generator.getStack(t1, t2)
+            generator.addIf(t1, expression2.value, '<=', label_true)
+            generator.addGoto(exit)
+            
+            generator.putLabel(label_true)
+            self.instructions.compile(environment_)
+            
+            # ------ get and increase variable
+            generator.addExpression(t3, 'P', temp_pos, '+')
+            generator.getStack(t4, t3)
+            generator.addExpression(t5, t4, '1', '+')
+            generator.setStack(t3, t5)
+            # ------ start again
+            generator.addGoto(start)
+
+            generator.putLabel(exit)
+            # ------ cycle end 
 
         generator.addComment("--- Fin < For >  ---")
-
-    def saveInHeap(self, value_):
-        generator_aux = Generator()
-        generator = generator_aux.getInstance()        
-        # ret_temp: value in heap (free value in heap )
-        ret_temp = generator.addTemp()
-        generator.addExpression(ret_temp, 'H', '', '')
-
-        for char in str(value_):
-            generator.setHeap('H', ord(char))
-            generator.nextHeap()
-
-        generator.setHeap('H', '-1')
-        generator.nextHeap()
-
-        return Value(ret_temp, Type.STRING, True)
-            
