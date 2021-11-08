@@ -29,6 +29,7 @@ class Function(Instruction):
             in_heap_ = (param.type == Type.STRING or param.type == Type.STRUCT)
             new_env.saveVar(param.id, param.type, in_heap_)
             
+        generator.freeAllTemps()
         generator.addBeginFunc(self.id)
         
         try:
@@ -38,3 +39,4 @@ class Function(Instruction):
         
         generator.putLabel(return_label)
         generator.addEndFunc()
+        generator.freeAllTemps()

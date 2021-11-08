@@ -17,6 +17,7 @@ class Generator:
         # temporary list
         self.temps = []
         self.errors = []
+        self.tempsRecover = {}
         # natives list
         self.printString = False
         self.potency = False
@@ -61,7 +62,7 @@ class Generator:
             
         else:
             self.code = self.code + '\t' +  code_    
-    
+
     # ============ Auxiliary functions
     def addComment(self, comment_):
         self.codeIn(f'/* {comment_} */\n')
@@ -86,7 +87,8 @@ class Generator:
         self.inNatives = False
         # temporary list
         self.temps = []
-        self.errors = []        
+        self.errors = []
+        self.tempsRecover = {}
         # natives list
         self.printString = False
         self.potency = False
@@ -100,14 +102,59 @@ class Generator:
 
     def addError(self, message_, line_, column_):
         self.errors.append(Exception(message_, line_, column_))
-
-    # ============ Temporary - label - goto - expression - if
+    
+    # ============ Temporary management
     def addTemp(self):
         temp = f't{self.count_temp}'
         self.count_temp += 1
         self.temps.append(temp)
+        self.tempsRecover[temp] = temp        
         return temp
 
+    def freeAllTemps(self):
+        self.tempsRecover = {}
+
+    def freeTemp(self, temp):
+        if(temp in self.tempsRecover):
+            self.tempsRecover.pop(temp, None)
+
+    def saveTemps(self, env):
+        size = 0
+        if len(self.tempsRecover) > 0:
+            temp = self.addTemp()
+            self.freeTemp(temp)
+
+            self.addComment('--- Inicio < Guardar temporales > ---')
+            self.addExpression(temp, 'P', env.size, '+')
+            for value in self.tempsRecover:
+                size += 1
+                self.setStack(temp, value, False)
+                if size != len(self.tempsRecover):
+                    self.addExpression(temp, temp, '1', '+')
+            self.addComment('--- Fin < Guardar temporales > ---')
+
+        ptr = env.size
+        env.size = ptr + size
+        return ptr
+
+    def recoverTemps(self, env, pos):
+        if len(self.tempsRecover) > 0:
+            temp = self.addTemp()
+            self.freeTemp(temp)
+
+            size = 0
+
+            self.addComment('--- Inicio < Recuperar temporales > ---')
+            self.addExpression(temp, 'P', pos, '+')
+            for value in self.tempsRecover:
+                size += 1
+                self.getStack(value, temp)
+                if size != len(self.tempsRecover):
+                    self.addExpression(temp, temp, '1', '+')
+            env.size = pos
+            self.addComment('--- Fin < Recuperar temporales > ---')
+            
+    # ============ Label - goto - expression - if
     def newLabel(self):
         label = f'L{self.count_label}'
         self.count_label += 1
@@ -120,9 +167,13 @@ class Generator:
         self.codeIn(f'{label_}:\n')
 
     def addIf(self, left_, right_, operation_, label_):
+        self.freeTemp(left_)
+        self.freeTemp(right_)        
         self.codeIn(f'if {left_} {operation_} {right_} {{goto {label_};}}\n')
                 
     def addExpression(self, result_, left_, right_, operation_):
+        self.freeTemp(left_)
+        self.freeTemp(right_)
         self.codeIn(f'{result_}={left_}{operation_}{right_};\n')
 
     def addBeginFunc(self, id_):
@@ -140,6 +191,7 @@ class Generator:
         
     # ============ INSTRUCTIONS
     def addPrint(self, type_, value_):
+        self.freeTemp(value_)
         self.codeIn(f'fmt.Printf("%{type_}", int({value_}));\n')
 
     def addPrintFloat(self, type_, value_):
@@ -195,21 +247,28 @@ class Generator:
         self.codeIn(f'{place_}=int(heap[int({pos_})])')
 
     # ============ STACK
-    def setStack(self, pos_, value_):
+    def setStack(self, pos_, value_, FreeValue = True):
         # stack[int(pos_)] = value_
+        self.freeTemp(pos_)
+        if FreeValue:
+            self.freeTemp(value_)        
         self.codeIn(f'stack[int({pos_})]={value_};\n')
     
-    def getStack(self, place_, pos_):
+    def getStack(self, place_, pos_):        
         # place_ = stack[int(pos_)]
+        self.freeTemp(pos_)
         self.codeIn(f'{place_}=stack[int({pos_})];\n')
 
     # ============ HEAP
     def setHeap(self, pos_, value_):
         # heap[int(pos_)] = value_
+        self.freeTemp(pos_)
+        self.freeTemp(value_)
         self.codeIn(f'heap[int({pos_})]={value_};\n')
 
     def getHeap(self, place_, pos_):
-        # place_ = heap[int(pos_)]        
+        # place_ = heap[int(pos_)]
+        self.freeTemp(pos_)
         self.codeIn(f'{place_}=heap[int({pos_})];\n')
 
     def nextHeap(self):
@@ -266,6 +325,9 @@ class Generator:
         self.putLabel(returnLbl)
         self.addEndFunc()
         self.inNatives = False
+        self.freeTemp(tempP)
+        self.freeTemp(tempH)
+        self.freeTemp(tempC)
 
     def fPotency(self):
         if self.potency:
@@ -314,7 +376,10 @@ class Generator:
         
         self.addEndFunc()                
         self.inNatives = False
-        
+        self.freeTemp(t0)
+        self.freeTemp(t1)
+        self.freeTemp(t2)
+                
     def fUpperCase(self):
         if self.upperCase:
             return
@@ -357,6 +422,9 @@ class Generator:
 
         self.addEndFunc()
         self.inNatives = False
+        self.freeTemp(t1)
+        self.freeTemp(t2)
+        self.freeTemp(t3)
         
     def fLowerCase(self):
         if self.lowerCase:
@@ -402,6 +470,9 @@ class Generator:
         
         self.addEndFunc()
         self.inNatives = False
+        self.freeTemp(t1)
+        self.freeTemp(t2)
+        self.freeTemp(t3)
         
     def fConcatenateStr(self):
         if self.concatenateStr:
@@ -457,6 +528,11 @@ class Generator:
         
         self.addEndFunc()
         self.inNatives = False
+        self.freeTemp(t2)
+        self.freeTemp(t2)
+        self.freeTemp(t4)
+        self.freeTemp(t5)
+        self.freeTemp(t6)
         
     def fRepetitionStr(self):
         if self.repetitionStr:
@@ -524,6 +600,13 @@ class Generator:
 
         self.addEndFunc()
         self.inNatives = False
+        self.freeTemp(t0)
+        self.freeTemp(t1)
+        self.freeTemp(t2)
+        self.freeTemp(t3)
+        self.freeTemp(t4)
+        self.freeTemp(t5)
+        self.freeTemp(counter)
 
     def fCompareStr(self):
         if self.compareStr:
@@ -571,3 +654,8 @@ class Generator:
         # ===== END CODE
         self.addEndFunc()
         self.inNatives = False
+        self.freeTemp(t2)
+        self.freeTemp(t3)
+        self.freeTemp(t4)
+        self.freeTemp(t5)
+        self.freeTemp(t6)        

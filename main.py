@@ -4,19 +4,19 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-arr = [1,2,3,4,5,6];
-for i in [1,2,3,4,5,6]
-    println(arr[i] == 1, arr[i] == 2, arr[i] == 3, arr[i] == 4, arr[i] == 5, arr[i] == 6);
-end;
-
-println("=================================FOR-3=================================");
-for e in [1,2,3,4,5,6]
-    if(length(arr) > e)
-        println(e*arr[e],e*arr[e],e*arr[e],e*arr[e],e*arr[e],e*arr[e]);
+function hanoi(discos::Int64, origen::Int64, auxiliar::Int64, destino::Int64)::Int64
+    if discos == 1
+        println("Mover de ", origen, " a ", destino);
+    else
+        hanoi(discos - 1, origen, destino, auxiliar);
+        println("Mover de ", origen, " a ", destino);
+        hanoi(discos - 1, auxiliar, origen, destino);
     end;
+    return 1;
 end;
 
-    
+
+hanoi(3, 1, 2, 3);
     '''
     generator_aux = Generator()
     generator_aux.cleanAll()

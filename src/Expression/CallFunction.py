@@ -19,14 +19,14 @@ class CallFunction(Expression):
             generator_aux = Generator()
             generator = generator_aux.getInstance()
             
-            size = environment_.size
+            size = generator.saveTemps(environment_)
             
             # compiling parameters values
             for param in self.parametes:
                 param_values.append(param.compile(environment_))
             
             temp = generator.addTemp()            
-            generator.addExpression(temp, 'P', size + 1, '+')
+            generator.addExpression(temp, 'P', environment_.size + 1, '+')
             aux = 0
 
             # setStack of parameters values
@@ -37,10 +37,12 @@ class CallFunction(Expression):
                 if aux != len(param_values):
                     generator.addExpression(temp, temp, '1', '+')
 
-            generator.newEnv(size)
+            generator.newEnv(environment_.size)
             generator.callFun(self.id)
             generator.getStack(temp, 'P')
-            generator.retEnv(size)
+            generator.retEnv(environment_.size)
+            
+            generator.recoverTemps(environment_, size)
 
             # missing if the function is boolean
             return Value(temp, function_.type, True)
