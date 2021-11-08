@@ -30,7 +30,7 @@ from src.Expression.CallFunction import *
 from src.Natives.DataManagement import *
 from src.Expression.WayIterate import *
 from src.Expression.CallArray import *
-
+from src.Natives.Length import *
 
 errors = []
 
@@ -451,6 +451,7 @@ def p_expression_access(t):
     '''
     expression : call_function_st
                | call_array_st
+               | native_array_st
     '''
     t[0] = t[1]
 
@@ -572,6 +573,13 @@ def p_unary_operation(t):
                           t[2], ArithmeticType.MINUS, t.lineno(1), find_column(input_, t.slice[1]))
     elif t[1] == '!':
         t[0] = Logical(t[2], None, LogicalType.NOT, t.lineno(1), find_column(input_, t.slice[1]))
+
+# ------------------------------ EXPRESSIONS - NATIVE ARRAY
+def p_native_array_st(t):
+    '''
+    native_array_st : LENGTH LEFT_PAR ID RIGHT_PAR
+    '''
+    t[0] = Length(t[3], t.lineno(1), find_column(input_, t.slice[1])) 
 
 # ------------------------------ NATIVES
 def p_expression_uppercase(t):
