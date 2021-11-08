@@ -29,7 +29,11 @@ class WayIterate(Expression):
         
         elif self.type_iteration == TypeIteration.STRING:
             
-            return self.expression1
+            primitive = Primitive(str(self.expression1), Type.STRING, self.line, self.column)
+            value = primitive.compile(environment_)
+
+            # value is a temporary where the string begins            
+            return value
         
         elif self.type_iteration == TypeIteration.ARRAY:
 

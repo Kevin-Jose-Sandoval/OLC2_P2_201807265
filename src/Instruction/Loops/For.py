@@ -142,9 +142,84 @@ class For(Instruction):
                 generator.putLabel(exit)
                 # ------ cycle end             
 
-            else:
-                # STRING
-                print("---- STRING")
-                print(value.value, value.type)
+            if value.type == Type.STRING:
+                # save var and getting ID
+                variable = environment_.saveVar(self.id, Type.CHAR, False)
+
+                # get position of variable
+                temp_pos = variable.pos
+                if not variable.isGlobal:
+                    temp_pos = generator.addTemp()
+                    generator.addExpression(temp_pos, 'P', variable.pos, "+")
+                
+                # ------ CYCLE
+                start = generator.newLabel()
+                label_true = generator.newLabel()
+                exit = generator.newLabel()
+                
+                value_string = generator.addTemp()
+                index_string = generator.addTemp()
+                
+                # index_string: where start the array in heap
+                generator.addExpression(index_string, value.value, '', '')
+                
+                generator.putLabel(start)
+                # get variable and assign value
+                generator.getHeap(value_string, index_string)
+                            
+                generator.addIf(value_string, '-1', '!=', label_true)
+                generator.addGoto(exit)
+                
+                generator.putLabel(label_true)
+                generator.setStack(variable.pos, value_string)
+
+                self.instructions.compile(environment_)
+
+                # ------ get and increase variables
+                generator.addExpression(index_string, index_string, '1', '+')
+                # ------ start again
+                generator.addGoto(start)
+                generator.putLabel(exit)
+                # ------ cycle end
+                
+        if self.way_iterate.type_iteration == TypeIteration.STRING:
+            # save var and getting ID
+            variable = environment_.saveVar(self.id, Type.CHAR, False)
+
+            # get position of variable
+            temp_pos = variable.pos
+            if not variable.isGlobal:
+                temp_pos = generator.addTemp()
+                generator.addExpression(temp_pos, 'P', variable.pos, "+")
+            
+            # ------ CYCLE
+            start = generator.newLabel()
+            label_true = generator.newLabel()
+            exit = generator.newLabel()
+            
+            value_string = generator.addTemp()
+            index_string = generator.addTemp()
+            
+            # index_string: where start the array in heap
+            generator.addExpression(index_string, value.value, '', '')
+            
+            generator.putLabel(start)
+            # get variable and assign value
+            generator.getHeap(value_string, index_string)
+                        
+            generator.addIf(value_string, '-1', '!=', label_true)
+            generator.addGoto(exit)
+            
+            generator.putLabel(label_true)
+            generator.setStack(variable.pos, value_string)
+
+            self.instructions.compile(environment_)
+
+            # ------ get and increase variables
+            generator.addExpression(index_string, index_string, '1', '+')
+            # ------ start again
+            generator.addGoto(start)
+            generator.putLabel(exit)
+            # ------ cycle end
             
         generator.addComment("--- Fin < For >  ---")

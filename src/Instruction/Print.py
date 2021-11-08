@@ -56,6 +56,9 @@ class Print(Instruction):
             generator.getStack(temp, 'P')
             generator.retEnv(environment_.size)
 
+        elif value.type == Type.CHAR:
+            generator.addPrint("c", value.value)
+        
         else:
             print("Falta en Print")
             

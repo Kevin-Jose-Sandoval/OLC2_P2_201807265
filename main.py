@@ -6,11 +6,11 @@ def compile():
     input_ = '''
     a = 500;
     b = "AAA";
-    for i in [10,20,30,40,50]
-        println(i);
+    cadena = "OLC2";
+    for letra in cadena
+    print(letra); # Imprime O-L-C-2
     end;
     '''
-
     generator_aux = Generator()
     generator_aux.cleanAll()
     generator = generator_aux.getInstance()
