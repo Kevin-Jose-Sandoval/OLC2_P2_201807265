@@ -4,12 +4,12 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-    a = 500;
-    b = "AAA";
-    cadena = "OLC2";
-    for letra in cadena
-    print(letra); # Imprime O-L-C-2
-    end;
+arr = [1,2,3,4,5,6];
+for i in [1,2,3,4,5,6]
+    println(arr[i] == 1, arr[i] == 2, arr[i] == 3, arr[i] == 4, arr[i] == 5, arr[i] == 6);
+end;
+
+    
     '''
     generator_aux = Generator()
     generator_aux.cleanAll()

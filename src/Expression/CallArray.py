@@ -130,7 +130,7 @@ class CallArray(Expression):
         size = generator.addTemp()
         generator.getHeap(size, upperLimit_)
         
-        generator.addIf(index_, '1', '<', label_error)
+        generator.addIf(index_, '0', '<', label_error)
         generator.addIf(index_, size, '>', label_error)
         generator.addGoto(label_continue)
         

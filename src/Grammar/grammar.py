@@ -288,13 +288,21 @@ def p_instruccion_error(t):
     
 # ------------------------------ PRINT
 def p_println_st(t):
-    'print_st : PRINTLN LEFT_PAR expression RIGHT_PAR'
+    'print_st : PRINTLN LEFT_PAR expression_list RIGHT_PAR'
     t[0] = Print(t[3], t.lineno(1), find_column(input_, t.slice[1]), True)
 
 def p_print_st(t):
-    'print_st : PRINT LEFT_PAR expression RIGHT_PAR'
+    'print_st : PRINT LEFT_PAR expression_list RIGHT_PAR'
     t[0] = Print(t[3], t.lineno(1), find_column(input_, t.slice[1]))
 
+def p_println_none(t):
+    'print_st : PRINTLN LEFT_PAR RIGHT_PAR'
+    t[0] = Print(None, t.lineno(1), find_column(input_, t.slice[1]), True)
+
+def p_print_none(t):
+    'print_st : PRINT LEFT_PAR RIGHT_PAR'
+    t[0] = Print(None, t.lineno(1), find_column(input_, t.slice[1]))
+    
 # ------------------------------ DECLARATION
 def p_declaration_st(t):
     '''
