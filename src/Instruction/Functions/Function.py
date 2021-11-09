@@ -37,6 +37,8 @@ class Function(Instruction):
         except:
             print("Error al compilar instrucciones de < "+ self.id + " >")
         
-        generator.putLabel(return_label)
+        if self.type is not None:
+            generator.putLabel(return_label)
+
         generator.addEndFunc()
         generator.freeAllTemps()

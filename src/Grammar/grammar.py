@@ -389,10 +389,20 @@ def p_declaration_function_st(t):
     declare_function_st : FUNCTION ID LEFT_PAR RIGHT_PAR COLON COLON type statement END
                         | FUNCTION ID LEFT_PAR declare_params RIGHT_PAR COLON COLON type statement END
     '''
-    if len(t) == 7:
+    if len(t) == 10:
         t[0] = Function(t[2], [], t[7], t[8], t.lineno(1), find_column(input_, t.slice[1]))
     else:
         t[0] = Function(t[2], t[4], t[8], t[9], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_declaration_function_void(t):
+    '''
+    declare_function_st : FUNCTION ID LEFT_PAR RIGHT_PAR statement END
+                        | FUNCTION ID LEFT_PAR declare_params RIGHT_PAR statement END
+    '''
+    if len(t) == 7:
+        t[0] = Function(t[2], [], None, t[5], t.lineno(1), find_column(input_, t.slice[1]))
+    else:
+        t[0] = Function(t[2], t[4], None, t[6], t.lineno(1), find_column(input_, t.slice[1]))
 
 def p_declare_params(t):
     '''

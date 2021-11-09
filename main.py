@@ -4,7 +4,7 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-function hanoi(discos::Int64, origen::Int64, auxiliar::Int64, destino::Int64)::Int64
+function hanoi(discos::Int64, origen::Int64, auxiliar::Int64, destino::Int64)
     if discos == 1
         println("Mover de ", origen, " a ", destino);
     else
@@ -12,11 +12,11 @@ function hanoi(discos::Int64, origen::Int64, auxiliar::Int64, destino::Int64)::I
         println("Mover de ", origen, " a ", destino);
         hanoi(discos - 1, auxiliar, origen, destino);
     end;
-    return 1;
 end;
 
 
 hanoi(3, 1, 2, 3);
+    
     '''
     generator_aux = Generator()
     generator_aux.cleanAll()
