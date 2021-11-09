@@ -17,6 +17,9 @@ from src.Instruction.Functions.Return import *
 from src.Instruction.Loops.For import *
 from src.Instruction.Arrays.Array import *
 from src.Instruction.Arrays.AssignArray import *
+from src.Instruction.Structs.Struct import *
+from src.Instruction.Structs.ParamStruct import *
+from src.Instruction.Structs.AccessStruct import *
 
 # expressions
 from src.Expression.Arithmetic import *
@@ -270,6 +273,8 @@ def p_instruction(t):
                 
                 | call_array_st SEMICOLON
                 | assign_array_st SEMICOLON
+                
+                | struct_st SEMICOLON
     '''
     t[0] = t[1]
 
@@ -456,12 +461,56 @@ def p_position(t):
     '''
     t[0] = t[2]
 
+# ------------------------------ STRUCTS
+def p_struct_st(t):
+    '''
+    struct_st : STRUCT ID list_attributes END
+              | MUTABLE STRUCT ID list_attributes END
+    '''
+    if len(t) == 5:
+        t[0] = Struct(t[2], t[3], t.lineno(1), find_column(input_, t.slice[1]))
+    else:
+        t[0] = Struct(t[3], t[4], t.lineno(1), find_column(input_, t.slice[1]), StructType.MUTABLE)
+
+def p_list_attributes(t):
+    '''
+    list_attributes : list_attributes attribute
+                    | attribute
+    '''
+    if len(t) == 2:
+        t[0] = [t[1]]
+    else:
+        t[1].append(t[2])
+        t[0] = t[1]
+
+def p_attribute(t):
+    # ID :: type
+    'attribute : ID COLON COLON type SEMICOLON'
+    t[0] = ParamStruct(t[1], t[4])
+
+# ACCESS STRUCT
+def p_access_struct(t):
+    'access_struct : ID POINT list_att_id'
+    t[0] = AccessStruct(t[1], t[3], t.lineno(1), find_column(input_, t.slice[1]))
+
+def p_list_att_id(t):
+    '''
+    list_att_id : list_att_id POINT ID
+                | ID
+    '''
+    if len(t) == 2:
+        t[0] = [t[1]]
+    else:
+        t[1].append(t[3])
+        t[0] = t[1]
+
 # ------------------------------ ACCESS EXPRESSION (FUNCTION, ARRAY, NATIVE_ARRAY)
 def p_expression_access(t):
     '''
     expression : call_function_st
                | call_array_st
                | native_array_st
+               | access_struct
     '''
     t[0] = t[1]
 
@@ -489,7 +538,8 @@ def p_type(t):
          | TYPE_BOOL
          | TYPE_CHAR
          | TYPE_STRING
-         | TYPE_NOTHING         
+         | TYPE_NOTHING
+         | ID
     '''
 
     if t[1] == 'Int64':
@@ -503,7 +553,10 @@ def p_type(t):
     elif t[1] == 'String':
         t[0] = Type.STRING
     elif t[1] == 'Nothing':
-        t[0] = Type.NULL                
+        t[0] = Type.NULL
+
+    elif t.slice[1].type == 'ID':
+        t[0] = t[1]
 
 # ------------------------------ LIST EXPRESSIONS
 def p_expression_list(t):

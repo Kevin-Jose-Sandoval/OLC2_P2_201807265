@@ -77,7 +77,7 @@ class For(Instruction):
         if ( self.way_iterate.type_iteration == TypeIteration.ARRAY or 
                 self.way_iterate.type_iteration == TypeIteration.ID) :
             
-            value = self.way_iterate.compile(environment_)
+            #value = self.way_iterate.compile(environment_)
 
             if value.type == Type.ARRAY:            
                 # save var and getting ID

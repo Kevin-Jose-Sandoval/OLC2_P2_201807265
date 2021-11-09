@@ -2,6 +2,7 @@ from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import Type
 from src.SymbolTable.Symbol import *
 from src.SymbolTable.Types import *
+from src.Instruction.Structs.SymbolStruct import *
 
 class Environment:
         
@@ -57,12 +58,13 @@ class Environment:
             self.functions[id_function_] = function_
             return False
             
-    def saveStruct(self, id_struct_, attributes_, type_struct_)            :
-        if id_struct_ in self.structs.keys():
-            return True
-        else:
-            self.structs[id_struct_] = [attributes_, type_struct_]
-            return False
+    def saveStruct(self, id_, list_attributes_, type_struct_ = StructType.INMUTABLE)            :
+        if id_ in self.structs.keys():
+            return None
+        
+        new_struct = SymbolStruct(id_, list_attributes_, type_struct_)
+        self.structs[id_] = new_struct
+        return new_struct
                 
     def getVar(self, id_var_):
         env = self
@@ -85,13 +87,14 @@ class Environment:
             
         return None
         
-    def getStruct(self, id_struct_):
+    def getStruct(self, id_):
         env = self
         
         while env != None:
-            if id_struct_ in env.structs.keys():
-                return env.structs[id_struct_]
-            
+            if id_ in env.structs.keys():
+                struct = env.structs[id_]
+                return struct
+
             env = env.previous
             
         return None            

@@ -4,19 +4,41 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-function hanoi(discos::Int64, origen::Int64, auxiliar::Int64, destino::Int64)
-    if discos == 1
-        println("Mover de ", origen, " a ", destino);
-    else
-        hanoi(discos - 1, origen, destino, auxiliar);
-        println("Mover de ", origen, " a ", destino);
-        hanoi(discos - 1, auxiliar, origen, destino);
-    end;
+struct Actor
+    nombre:: String;
+    edad:: Int64;
 end;
 
+struct Pelicula 
+    nombre::String;
+    posicion::Int64;
+end;
 
-hanoi(3, 1, 2, 3);
-    
+struct Contrato
+    actor::Actor;
+    pelicula::Pelicula;
+end;
+
+actores = ["Elizabeth Olsen", "Adam Sandler", "Christian Bale", "Jennifer Aniston"];
+peliculas = ["Avengers: Age of Ultron", "Mr. Deeds", "Batman: The Dark Knight", "Marley & Me"];
+
+function contratar(actor::Actor, pelicula::Pelicula)
+    return Contrato(actor,pelicula);
+end;
+
+function crearActor(nombre::String, edad::Int64)
+    return Actor(nombre,edad);
+end;
+
+function crearPelicula(nombre::String, posicion::Int64) 
+    return Pelicula(nombre,posicion);
+end;
+
+function imprimir(contrato::Contrato)
+    println("Actor: ", contrato.actor.nombre, "   Edad: ", contrato.actor.edad);
+    println("Pelicula: ", contrato.pelicula.nombre, "   Genero: ", contrato.pelicula.posicion);
+end;
+
     '''
     generator_aux = Generator()
     generator_aux.cleanAll()

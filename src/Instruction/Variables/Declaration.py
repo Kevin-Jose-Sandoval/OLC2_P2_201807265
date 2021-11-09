@@ -27,6 +27,8 @@ class Declaration(Instruction):
         new_var.type = value.type
         if value.type == Type.ARRAY:
             new_var.type_array = value.type_array
+        if value.type == Type.STRUCT:
+            new_var.type_struct = value.aux_type
         
         # get position of variable: space where it is 
         temp_pos = new_var.pos

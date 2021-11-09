@@ -32,10 +32,10 @@ class Function(Instruction):
         generator.freeAllTemps()
         generator.addBeginFunc(self.id)
         
-        try:
-            self.instructions.compile(new_env)
-        except:
-            print("Error al compilar instrucciones de < "+ self.id + " >")
+        #try:
+        self.instructions.compile(new_env)
+        #except:
+        #    print("Error al compilar instrucciones de < "+ self.id + " >")
         
         if self.type is not None:
             generator.putLabel(return_label)

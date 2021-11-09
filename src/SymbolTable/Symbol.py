@@ -9,3 +9,4 @@ class Symbol:
         self.inHeap = in_heap_
         
         self.type_array = None
+        self.type_struct = None
