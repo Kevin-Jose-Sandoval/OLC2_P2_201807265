@@ -4,42 +4,32 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-struct Actor
-    nombre:: String;
-    edad:: Int64;
+array = [
+        [12,9,4,99,56,34,78,22,1,3,10,13,120],
+        [32,7*3,7,89,56,909,109,2,9,9874^0,44,3,820*10,11,8*0+8,10]
+    ];
+
+println("Quick Sort");
+for x in 1:length(array[1])
+	print(array[1][x]);
 end;
+println("");
 
-struct Pelicula 
-    nombre::String;
-    posicion::Int64;
-end;
 
-struct Contrato
-    actor::Actor;
-    pelicula::Pelicula;
-end;
+#=
+println(b[3][1]);
+println(b[3][2]);
+println(b[3][3]);
 
-actores = ["Elizabeth Olsen", "Adam Sandler", "Christian Bale", "Jennifer Aniston"];
-peliculas = ["Avengers: Age of Ultron", "Mr. Deeds", "Batman: The Dark Knight", "Marley & Me"];
+println(b[4][1]);
+println(b[4][2]);
 
-function contratar(actor::Actor, pelicula::Pelicula)
-    return Contrato(actor,pelicula);
-end;
+println(b[1]);
+println(b[2]);
+=#
 
-function crearActor(nombre::String, edad::Int64)
-    return Actor(nombre,edad);
-end;
 
-function crearPelicula(nombre::String, posicion::Int64) 
-    return Pelicula(nombre,posicion);
-end;
-
-function imprimir(contrato::Contrato)
-    println("Actor: ", contrato.actor.nombre, "   Edad: ", contrato.actor.edad);
-    println("Pelicula: ", contrato.pelicula.nombre, "   Genero: ", contrato.pelicula.posicion);
-end;
-
-    '''
+'''
     generator_aux = Generator()
     generator_aux.cleanAll()
     generator = generator_aux.getInstance()

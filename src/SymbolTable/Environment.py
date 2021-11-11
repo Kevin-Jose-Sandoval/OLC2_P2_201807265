@@ -25,13 +25,15 @@ class Environment:
         self.type = None
         self.scope = None
         
-    def saveVar(self, id_var_, type_, in_heap_):
+    def saveVar(self, id_var_, type_, in_heap_, type_struct_ = None):
         if id_var_ in self.variables.keys():
             print("Ya existe la variable " + str(id_var_))
             
         else:
             # (id_, type_, position_, is_global_, in_heap_)
             new_symbol = Symbol(id_var_, type_, self.size, self.previous == None, in_heap_)
+            #if type_struct_ is not None:
+            #    new_symbol.type_struct = type_struct_
             self.size += 1
             self.variables[id_var_] = new_symbol
         

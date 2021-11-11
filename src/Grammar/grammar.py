@@ -640,7 +640,7 @@ def p_unary_operation(t):
 # ------------------------------ EXPRESSIONS - NATIVE ARRAY
 def p_native_array_st(t):
     '''
-    native_array_st : LENGTH LEFT_PAR ID RIGHT_PAR
+    native_array_st : LENGTH LEFT_PAR expression RIGHT_PAR
     '''
     t[0] = Length(t[3], t.lineno(1), find_column(input_, t.slice[1])) 
 

@@ -27,8 +27,12 @@ class Function(Instruction):
         
         for param in self.parameters:
             in_heap_ = (param.type == Type.STRING or param.type == Type.STRUCT)
+            #print('///', param.type, isinstance(param.type, Type))
+            #if isinstance(param.type, Type):
             new_env.saveVar(param.id, param.type, in_heap_)
-            
+            #else:
+            #    new_env.saveVar(param.id, Type.STRUCT, in_heap_, param.type)
+
         generator.freeAllTemps()
         generator.addBeginFunc(self.id)
         

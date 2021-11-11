@@ -44,27 +44,16 @@ class CallArray(Expression):
 
         if len(self.poistion_list) == 1:
             index_value = self.poistion_list[0].compile(environment_)
-            
-            # ----------------- VERIFICATON OF INDEX (TEMP  || INT)
-            if index_value.is_temp:
-                # auxiliar_index has a temporaly with index value
-                generator.addExpression(auxiliar_index, index_value.value, '', '')
-                temp_aux = temp_move
-                
-            else:
-                index = int(index_value.value)
-                generator.addExpression(auxiliar_index, index, '', '')
-                temp_aux = temp_move            
-            
+            temp_aux = temp_move
+        
             # ----------------- START CONTENT OF CALL
-            generator.addExpression(auxiliar_index, auxiliar_index, '1', '-')
+            generator.addExpression(temp_aux, temp_aux, self.getIndex(index_value), '+')
             
             # Save upper limit to BoundsError
             generator.getStack(initial_size, variable.pos)
             self.getUpperLimit(initial_size)
-            self.verifyBoundsError(auxiliar_index, self.upper_limit, temp_result)            
+            self.verifyBoundsError(temp_aux, self.upper_limit, temp_result)            
             
-            generator.addExpression(temp_move, temp_move, auxiliar_index, '+')
             generator.getHeap(temp_result, temp_move)
             
             generator.putLabel(self.exit_label)
@@ -75,43 +64,45 @@ class CallArray(Expression):
             
             for i in range(len(self.poistion_list)):
                 index_value = self.poistion_list[i].compile(environment_)
-                
-                # ----------------- VERIFICATON OF INDEX (TEMP  || INT)
-                if index_value.is_temp:
-                    # auxiliar_index has a temporaly with index value
-                    generator.addExpression(auxiliar_index, index_value.value, '', '')
-                    temp_aux = temp_move
-                    
-                else:
-                    index = int(index_value.value)
-                    generator.addExpression(auxiliar_index, index, '', '')
-                    temp_aux = temp_move
+                temp_aux = temp_move
                 
                 # ----------------- START CONTENT OF CALL
                 if i == 0:
-                    generator.addExpression(auxiliar_index, auxiliar_index, '1', '-')
-                    generator.addExpression(temp_aux, temp_aux, auxiliar_index, '+')
+                    generator.addExpression(temp_aux, temp_aux, self.getIndex(index_value), '+')
                     
                     # Save upper limit to BoundsError
                     generator.getStack(initial_size, variable.pos)
                     self.getUpperLimit(initial_size)
-                    self.verifyBoundsError(auxiliar_index, self.upper_limit, temp_result)
+                    self.verifyBoundsError(temp_aux, self.upper_limit, temp_result)
                     continue
 
-                temp_move = generator.addTemp()                
+                temp_move = generator.addTemp()
                 generator.getHeap(temp_move, temp_aux)
                 
+                generator.addExpression(temp_move, temp_move, '1', '+')
+                generator.addExpression(temp_move, temp_move, self.getIndex(index_value), '+')
+                
                 # Save upper limit to BoundsError
-                self.getUpperLimit(temp_move)
-                self.verifyBoundsError(auxiliar_index, self.upper_limit, temp_result)
-
-                generator.addExpression(temp_move, temp_move, auxiliar_index, '+')
+                #self.verifyBoundsError(temp_move, temp_aux, temp_result)
                 
             generator.getHeap(temp_result, temp_move)
             generator.addComment("--- Fin < CallArray >  ---")
             
             generator.putLabel(self.exit_label)
             return Value(temp_result, variable.type_array, True)
+    
+    def getIndex(self, index_):
+        generator_aux = Generator()
+        generator = generator_aux.getInstance()
+                
+        new_value = None
+        if index_.is_temp:
+            new_value = index_.value
+            generator.addExpression(new_value, index_.value, '1', '-')    
+        else:
+            new_value = index_.value - 1
+            
+        return new_value
         
     def getUpperLimit(self, temp_move_):
         generator_aux = Generator()
@@ -130,7 +121,7 @@ class CallArray(Expression):
         size = generator.addTemp()
         generator.getHeap(size, upperLimit_)
         
-        generator.addIf(index_, '0', '<', label_error)
+        generator.addIf(index_, '1', '<', label_error)
         generator.addIf(index_, size, '>', label_error)
         generator.addGoto(label_continue)
         

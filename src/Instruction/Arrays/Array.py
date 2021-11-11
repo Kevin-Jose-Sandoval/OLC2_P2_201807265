@@ -46,6 +46,6 @@ class Array(Instruction):
         
         generator.addComment("--- Fin < Guardar Array >  ---")
         result = Value(temp, Type.ARRAY, True)
-        result.type_array = self.type
+        result.type_array = Type.INT64
         
         return result

@@ -5,25 +5,37 @@ from src.SymbolTable.Types import *
 
 class Length(Expression):
     
-    def __init__(self, id_array_, line_, column_):
+    def __init__(self, expression_, line_, column_):
         Expression.__init__(self, line_, column_)
-        self.id_array = id_array_
+        self.expression = expression_
         
     def compile(self, environment_):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
+
+        value: Value = self.expression.compile(environment_)
         
-        # get var
-        variable = environment_.getVar(self.id_array)
-        
-        # get position of variable
-        temp_pos = variable.pos
-        if not variable.isGlobal:
-            temp_pos = generator.addTemp()
-            generator.addExpression(temp_pos, 'P', variable.pos, "+")
-        
-        size = generator.addTemp()
-        
-        generator.getHeap(size, temp_pos)
-        
-        return Value(size, Type.INT64, True)
+        if value.type == Type.STRING:
+            pass
+        else:
+            if value.type == Type.ARRAY:
+                temp = generator.addTemp()
+                length = generator.addTemp()
+                
+                generator.addSpace()
+                generator.addComment('Inicia Length de ARRAY')
+                generator.getStack(temp, value.value)
+                generator.getHeap(length, temp)
+                generator.addSpace()
+                generator.addComment('Fin Length de ARRAY')
+                
+                return Value(length, Type.INT64, True)
+            
+            else:
+                length = generator.addTemp()
+                
+                generator.addSpace()
+                generator.getHeap(length, value.value)
+                generator.addSpace()
+
+                return Value(length, Type.INT64, True)
