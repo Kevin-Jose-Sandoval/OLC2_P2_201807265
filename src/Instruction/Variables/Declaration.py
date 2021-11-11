@@ -5,14 +5,18 @@ from src.SymbolTable.Types import *
 
 class Declaration(Instruction):
     
-    def __init__(self, id_, value_, line_, column_):
+    def __init__(self, id_, value_, line_, column_, type_aux_ = None):
         Instruction.__init__(self, line_, column_)
         self.id = id_
         self.value = value_
+        self.type_aux = type_aux_
         
     def compile(self, environment_):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
+        
+        #if self.type_aux is not None:
+        #    print("--------------", self.type_aux)
         
         generator.addComment("--- Inicio < Compilar valor de variable > ---")
         # id = value
@@ -26,7 +30,7 @@ class Declaration(Instruction):
             new_var = environment_.saveVar(self.id, value.type, in_heap)
         new_var.type = value.type
         if value.type == Type.ARRAY:
-            new_var.type_array = value.type_array
+            new_var.type_array = self.type_aux
         if value.type == Type.STRUCT:
             new_var.type_struct = value.aux_type
         

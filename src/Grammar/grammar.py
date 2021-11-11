@@ -82,6 +82,7 @@ reserved_words = {
     
     # natives arrays
     'length'    : 'LENGTH',
+    'Vector'    : 'VECTOR',
     
     # for sentence
     'in'        : 'IN',
@@ -111,6 +112,8 @@ tokens = [
     'RIGHT_PAR',
     'LEFT_BRACKET',
     'RIGHT_BRACKET',
+    'LEFT_KEY',
+    'RIGHT_KEY',
     
     # arithmetics symbols
     'PLUS',
@@ -146,6 +149,8 @@ t_LEFT_PAR              = r'\('
 t_RIGHT_PAR             = r'\)'
 t_LEFT_BRACKET          = r'\['
 t_RIGHT_BRACKET         = r'\]'
+t_LEFT_KEY              = r'\{'
+t_RIGHT_KEY             = r'\}'
 
 # arithmetics symbols
 t_PLUS                  = r'\+'
@@ -311,11 +316,42 @@ def p_print_none(t):
 # ------------------------------ DECLARATION
 def p_declaration_st(t):
     '''
-    declaration_st : ID EQUAL expression
+    declaration_st : ID EQUAL expression COLON COLON type
     '''
-    if len(t) == 4:
-        t[0] = Declaration(t[1], t[3], t.lineno(2), find_column(input_, t.slice[2]))
+    t[0] = Declaration(t[1], t[3], t.lineno(2), find_column(input_, t.slice[2]))
 
+def p_declaration_array_st(t):
+    '''
+    declaration_st : ID EQUAL expression COLON COLON type_array
+    '''
+    t[0] = Declaration(t[1], t[3], t.lineno(2), find_column(input_, t.slice[2]), t[6])
+    
+def p_type_array(t):
+    '''
+    type_array : VECTOR LEFT_KEY type_array RIGHT_KEY
+               | VECTOR LEFT_KEY sub_type_array RIGHT_KEY
+    '''
+    t[0] = t[3]
+        
+def p_sub_type_array(t):
+    '''
+    sub_type_array : TYPE_INT64
+                   | TYPE_FLOAT64
+                   | TYPE_BOOL
+                   | TYPE_CHAR
+                   | TYPE_STRING
+    '''
+    if t[1] == 'Int64':
+        t[0] = Type.INT64
+    elif t[1] == 'Float64':
+        t[0] = Type.FLOAT64
+    elif t[1] == 'Bool':
+        t[0] = Type.BOOLEAN
+    elif t[1] == 'Char':
+        t[0] = Type.CHAR
+    elif t[1] == 'String':
+        t[0] = Type.STRING
+    
 # ------------------------------ ACCESS ID
 def p_expression_id(t):
     'expression : ID'
