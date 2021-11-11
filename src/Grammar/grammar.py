@@ -34,6 +34,7 @@ from src.Natives.DataManagement import *
 from src.Expression.WayIterate import *
 from src.Expression.CallArray import *
 from src.Natives.Length import *
+from src.Natives.Truncate import *
 
 errors = []
 
@@ -691,7 +692,7 @@ def p_expression_lowercase(t):
 
 def p_expression_trunc(t):
     'expression : TRUNC LEFT_PAR expression RIGHT_PAR'
-    t[0] = DataManagement(TypeNative.TRUNC, t[3], t.lineno(1), find_column(input_, t.slice[1]))
+    t[0] = Truncate(t[3], t.lineno(1), find_column(input_, t.slice[1]))
 
 def p_expression_float(t):
     'expression : FLOAT LEFT_PAR expression RIGHT_PAR'

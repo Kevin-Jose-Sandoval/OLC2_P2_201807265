@@ -26,6 +26,7 @@ class Generator:
         self.concatenateStr = False
         self.repetitionStr = False
         self.compareStr = False
+        self.truncFloat = False
         
         self.list_aux = []
 
@@ -97,6 +98,7 @@ class Generator:
         self.concatenate = False
         self.repetitionStr = False
         self.compareStr = False
+        self.truncFloat = False
 
         Generator.generator = Generator()    
 
@@ -658,4 +660,43 @@ class Generator:
         self.freeTemp(t3)
         self.freeTemp(t4)
         self.freeTemp(t5)
-        self.freeTemp(t6)        
+        self.freeTemp(t6)
+
+    def fTruncFloat(self):
+        if self.truncFloat:
+            return
+        self.truncFloat = True
+        self.inNatives = True
+
+        self.addBeginFunc('truncFloat')
+
+        # ===== START CODE
+        end_label = self.newLabel()
+        wh_label = self.newLabel()
+
+        tmp_p = self.addTemp()
+        tmp_num = self.addTemp()
+        tmp_count = self.addTemp()
+        
+        # initializing
+        self.addExpression(tmp_p, 'P', '1', '+')
+        self.getStack(tmp_num, tmp_p)
+        self.addExpression(tmp_count, '0', '', '')
+        
+        # start cycle
+        self.putLabel(wh_label)
+        self.addIf(tmp_count, tmp_num, '>', end_label)
+        self.addExpression(tmp_count, tmp_count, '1', '+')
+        self.addGoto(wh_label)
+        
+        self.putLabel(end_label)
+        self.addExpression(tmp_count, tmp_count, '1', '-')
+        self.setStack('P', tmp_count)
+                        
+        # ===== END CODE
+        self.addEndFunc()
+        self.inNatives = False
+        self.freeTemp(tmp_p)
+        self.freeTemp(tmp_num)
+        self.freeTemp(tmp_count)
+        
