@@ -14,10 +14,9 @@ class Truncate(Expression):
         generator = generator_aux.getInstance()
         
         value: Value = self.expression.compile(environment_)
-        
-        if value.type != Type.FLOAT64:
-            generator.addError('Se esperaba Float64', self.line, self.column)
-            return
+        #if value.type != Type.FLOAT64:
+        #    generator.addError('Se esperaba Float64', self.line, self.column)
+        #    return
         
         generator.fTruncFloat()
         generator.addSpace()
@@ -36,4 +35,5 @@ class Truncate(Expression):
         
         generator.addSpace()
         
+        print(return_p)
         return Value(return_p, Type.INT64, True)

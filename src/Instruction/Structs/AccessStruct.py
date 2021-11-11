@@ -30,7 +30,6 @@ class AccessStruct(Instruction):
         i = 0
         att_type = None
         struct: SymbolStruct = environment_.getStruct(variable.type_struct)
-        print(struct, "------------------")
         if not variable.isGlobal:
             tmp_pos = generator.addTemp()    
             generator.addExpression(tmp_pos, 'P', variable.pos, '+')

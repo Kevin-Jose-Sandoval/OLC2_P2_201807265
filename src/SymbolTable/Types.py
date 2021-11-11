@@ -5,6 +5,7 @@ class TypeIteration(Enum):
     STRING = 1
     ID = 2
     ARRAY = 3
+    STRUCT = 4
     
 class TypeNative(Enum):
     # mathematics

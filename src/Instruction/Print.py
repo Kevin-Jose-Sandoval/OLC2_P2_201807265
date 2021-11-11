@@ -21,7 +21,7 @@ class Print(Instruction):
         
             if len(self.value) == 1:
                 value = self.value[0].compile(environment_)
-                print(value.value, value.type, value.is_temp, value.aux_type)
+
                # generator.printValueHeap(value.value)
                 if value.type == Type.INT64:
                     generator.addPrint("d", value.value)

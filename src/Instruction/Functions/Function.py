@@ -3,6 +3,7 @@ from src.SymbolTable.Exception import *
 from src.SymbolTable.Environment import *
 from src.Abstract.Instruction import *
 from src.SymbolTable.Types import *
+from src.SymbolTable.Symbol import *
 
 class Function(Instruction):
     
@@ -14,7 +15,6 @@ class Function(Instruction):
         self.instructions = instructions_
         
     def compile(self, environment_):
-        
         environment_.saveFunction(self.id, self)        
         generator_aux = Generator()
         generator = generator_aux.getInstance()
@@ -27,22 +27,23 @@ class Function(Instruction):
         
         for param in self.parameters:
             in_heap_ = (param.type == Type.STRING or param.type == Type.STRUCT)
-            #print('///', param.type, isinstance(param.type, Type))
-            #if isinstance(param.type, Type):
-            new_env.saveVar(param.id, param.type, in_heap_)
-            #else:
-            #    new_env.saveVar(param.id, Type.STRUCT, in_heap_, param.type)
+            
+            if isinstance(param.type, Type) and param.type_aux != Type.ARRAY:
+                new_env.saveVar(param.id, param.type, in_heap_)
+            elif isinstance(param.type, Type) and param.type_aux == Type.ARRAY:
+                var :Symbol  = new_env.saveVar(param.id, Type.ARRAY, in_heap_)
+                var.type_array = param.type
+            else:
+                new_env.saveVar(param.id, Type.STRUCT, in_heap_, param.type)
 
         generator.freeAllTemps()
         generator.addBeginFunc(self.id)
         
-        #try:
         self.instructions.compile(new_env)
-        #except:
-        #    print("Error al compilar instrucciones de < "+ self.id + " >")
         
         if self.type is not None:
             generator.putLabel(return_label)
 
         generator.addEndFunc()
         generator.freeAllTemps()
+        

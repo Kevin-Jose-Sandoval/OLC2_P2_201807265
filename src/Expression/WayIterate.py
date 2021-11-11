@@ -16,8 +16,21 @@ class WayIterate(Expression):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
 
+        if self.type_iteration == TypeIteration.STRUCT:
+            value = self.expression1.compile(environment_)
+            print(value.value, value.type, '=====', value.type_array, '**')
+            
+            # value.value start the array
+            # considering that it will always be an array
+            value.type_array = value.type
+            
+            value_return = Value(value.value, Type.ARRAY, True)
+            value_return.type_array = value.type_array
+            
+            return value_return
+            
         # expression1 : expression2
-        if self.type_iteration == TypeIteration.RANK:
+        elif self.type_iteration == TypeIteration.RANK:
             value1 = self.expression1.compile(environment_)
             value2 = self.expression2.compile(environment_)
 

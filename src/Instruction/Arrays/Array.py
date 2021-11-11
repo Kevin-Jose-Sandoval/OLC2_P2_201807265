@@ -45,4 +45,9 @@ class Array(Instruction):
         generator.list_aux.append(self.values_list)
         
         generator.addComment("--- Fin < Guardar Array >  ---")
-        return Value(temp, Type.ARRAY, True)
+        value_return = Value(temp, Type.ARRAY, True)
+        
+        if isinstance(self.type, Type):
+            value_return.type_array = self.type
+        
+        return value_return

@@ -15,11 +15,7 @@ class Declaration(Instruction):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
         
-        #if self.type_aux is not None:
-        #    print("--------------", self.type_aux)
-        
         generator.addComment("--- Inicio < Compilar valor de variable > ---")
-        # id = value
         value = self.value.compile(environment_)
         generator.addComment("--- Fin < Compilar valor de variable > ---")
 
@@ -29,6 +25,10 @@ class Declaration(Instruction):
             in_heap = (value.type == Type.STRING or value.type == Type.STRUCT)
             new_var = environment_.saveVar(self.id, value.type, in_heap)
         new_var.type = value.type
+        
+        print(self.id, value.value)
+        # --------- ASSING TYPE
+        #print(value.type, self.type_aux, '--------')
         if value.type == Type.ARRAY:
             new_var.type_array = self.type_aux
         if value.type == Type.STRUCT:
@@ -38,23 +38,28 @@ class Declaration(Instruction):
         temp_pos = new_var.pos
         if not new_var.isGlobal:
             temp_pos = generator.addTemp()
-            # temp_pos = P + position
             generator.addExpression(temp_pos, 'P', new_var.pos, "+")
             
         if value.type == Type.BOOLEAN:
-            temp_label = generator.newLabel()
-
-            # where is True, save 1
-            generator.putLabel(value.true_label)
-            generator.setStack(temp_pos, "1")
-
-            generator.addGoto(temp_label)
-
-            # where is False, save 0
-            generator.putLabel(value.false_label)
-            generator.setStack(temp_pos, "0")
-
-            generator.putLabel(temp_label)
+            self.valueBoolean(value, temp_pos)
         else:
             generator.setStack(temp_pos, value.value)
         generator.addSpace()
+    
+    def valueBoolean(self, value, temp_pos):
+        generator_aux = Generator()
+        generator = generator_aux.getInstance()
+        
+        temp_label = generator.newLabel()
+
+        # where is True, save 1
+        generator.putLabel(value.true_label)
+        generator.setStack(temp_pos, "1")
+
+        generator.addGoto(temp_label)
+
+        # where is False, save 0
+        generator.putLabel(value.false_label)
+        generator.setStack(temp_pos, "0")
+
+        generator.putLabel(temp_label)

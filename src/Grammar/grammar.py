@@ -318,8 +318,13 @@ def p_print_none(t):
 def p_declaration_st(t):
     '''
     declaration_st : ID EQUAL expression COLON COLON type
+                   | ID EQUAL expression
     '''
-    t[0] = Declaration(t[1], t[3], t.lineno(2), find_column(input_, t.slice[2]))
+    if len(t) == 7:
+        t[0] = Declaration(t[1], t[3], t.lineno(2), find_column(input_, t.slice[2]), t[6])
+    else:
+        t[0] = Declaration(t[1], t[3], t.lineno(2), find_column(input_, t.slice[2]))
+        
 
 def p_declaration_array_st(t):
     '''
@@ -415,6 +420,11 @@ def p_for_direct_array(t):
     'ways_iterate : LEFT_BRACKET expression_list RIGHT_BRACKET'
     t[0] = WayIterate(t[2], None, TypeIteration.ARRAY, t.lineno(1), 0)
 
+def p_for_access_struct(t):
+    'ways_iterate : access_struct'
+    t[0] = WayIterate(t[1], None, TypeIteration.STRUCT, t.lineno(1), 0)
+
+
 # ------------------------------ BREAK
 def p_break_st(t):
     'break_st : BREAK'
@@ -450,13 +460,16 @@ def p_declare_params(t):
     '''
     declare_params : declare_params COMMA ID COLON COLON type
                    | ID COLON COLON type
+                   | ID COLON COLON type_array
     '''
-    if len(t) == 5:
-        t[0] = [Param(t[1], t[4], t.lineno(1), find_column(input_, t.slice[1]))]
+    
+    if t.slice[4].type == 'type_array':
+        t[0] = [Param(t[1], t[4], t.lineno(1), find_column(input_, t.slice[1]), Type.ARRAY)]
+    elif len(t) == 5:
+        t[0] = [Param(t[1], t[4], t.lineno(1), find_column(input_, t.slice[1]))]        
     else:
         t[1].append(Param(t[3], t[6], t.lineno(3), t.lexpos(3)))
         t[0] = t[1]
-
 # ------------------------------ FUNCTION - CALL FUNCTION
 def p_call_function_st(t):
     '''
@@ -522,7 +535,10 @@ def p_list_attributes(t):
 
 def p_attribute(t):
     # ID :: type
-    'attribute : ID COLON COLON type SEMICOLON'
+    '''
+    attribute : ID COLON COLON type SEMICOLON
+               | ID COLON COLON type_array SEMICOLON
+    '''
     t[0] = ParamStruct(t[1], t[4])
 
 # ACCESS STRUCT

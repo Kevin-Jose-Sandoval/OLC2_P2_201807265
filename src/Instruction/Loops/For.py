@@ -53,8 +53,7 @@ class For(Instruction):
             # ------ cycle start
             generator.putLabel(start)
 
-            generator.addExpression(t2, 'P', temp_pos, '+')
-            generator.getStack(t1, t2)
+            generator.getStack(t1, temp_pos)
             generator.addIf(t1, expression2.value, '<=', label_true)
             generator.addGoto(exit)
 
@@ -62,20 +61,26 @@ class For(Instruction):
             self.instructions.compile(environment_)
 
             # ------ get and increase variable
-            generator.addExpression(t3, 'P', temp_pos, '+')
-            generator.getStack(t4, t3)
+            #generator.addExpression(t3, 'P', temp_pos, '+')
+            generator.getStack(t4, temp_pos)
+            
             generator.addExpression(t5, t4, '1', '+')
-            generator.setStack(t3, t5)
+
+            generator.setStack(temp_pos, t5)
+            
+            
             # ------ start again
             generator.addGoto(start)
 
             generator.putLabel(exit)
             # ------ cycle end 
 
-        value = self.way_iterate.compile(environment_)
-        
+        #value = self.way_iterate.compile(environment_)
+        #print(value, '***********')
         if ( self.way_iterate.type_iteration == TypeIteration.ARRAY or 
-                self.way_iterate.type_iteration == TypeIteration.ID) :
+                self.way_iterate.type_iteration == TypeIteration.ID or
+                self.way_iterate.type_iteration == TypeIteration.STRUCT
+                ) :
             
             #value = self.way_iterate.compile(environment_)
 
