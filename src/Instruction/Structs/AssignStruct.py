@@ -6,18 +6,20 @@ from src.Instruction.Structs.SymbolStruct import *
 from src.Instruction.Structs.ParamStruct import *
 from src.SymbolTable.Symbol import *
 
-class AccessStruct(Instruction):
+class AssignStruct(Instruction):
     
-    def __init__(self, id_, att_name_list_, line_, column_):
+    def __init__(self, id_, att_name_list_, expression_, line_, column_):
         Instruction.__init__(self, line_, column_)
         self.id = id_
         self.att_name_list = att_name_list_
+        self.expression = expression_
         
     def compile(self, environment_):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
         
         variable : Symbol = environment_.getVar(self.id)
+        expression = self.expression.compile(environment_)
         
         if variable is None:
             generator.addError(f'No existe la variable <{self.id}>', self.line, self.column)
@@ -54,14 +56,9 @@ class AccessStruct(Instruction):
             generator.getHeap(tmp_i, tmp_aux)
             generator.addExpression(tmp_i, tmp_i, i, '+')
             
-        generator.getHeap(tmp_saved, tmp_i)
-        
-        value_return = Value(tmp_saved, att_type.type_aux, True)
-        if att_type.type_aux == Type.STRUCT:
-            value_return.aux_type = att_type.type_aux
-        return value_return
-            
-    
+        #generator.getHeap(tmp_saved, tmp_i)
+        generator.setHeap(tmp_i, expression.value)
+
     def searchAttribute(self, att_name_, struct_: SymbolStruct):
         i = 0
 

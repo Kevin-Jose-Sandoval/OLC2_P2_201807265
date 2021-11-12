@@ -20,6 +20,7 @@ from src.Instruction.Arrays.AssignArray import *
 from src.Instruction.Structs.Struct import *
 from src.Instruction.Structs.ParamStruct import *
 from src.Instruction.Structs.AccessStruct import *
+from src.Instruction.Structs.AssignStruct import *
 
 # expressions
 from src.Expression.Arithmetic import *
@@ -281,6 +282,7 @@ def p_instruction(t):
                 | assign_array_st SEMICOLON
                 
                 | struct_st SEMICOLON
+                | assign_struct_st SEMICOLON
     '''
     t[0] = t[1]
 
@@ -556,6 +558,11 @@ def p_list_att_id(t):
     else:
         t[1].append(t[3])
         t[0] = t[1]
+        
+# ASSIGN STRUCT
+def p_assign_struct_st(t):
+    'assign_struct_st : ID POINT list_att_id EQUAL expression'
+    t[0] = AssignStruct(t[1], t[3], t[5], t.lineno(1), find_column(input_, t.slice[1]))        
 
 # ------------------------------ ACCESS EXPRESSION (FUNCTION, ARRAY, NATIVE_ARRAY)
 def p_expression_access(t):
