@@ -46,7 +46,7 @@ class CallArray(Expression):
         
         # position at start of array (size)
         generator.getStack(temp_move, temp_pos)
-        generator.addExpression(temp_move, temp_move, '1', '+')
+        generator.addExpression(temp_move, temp_move, '1', '+')        
 
         if len(self.poistion_list) == 1:
             index_value = self.poistion_list[0].compile(environment_)
@@ -56,13 +56,12 @@ class CallArray(Expression):
             generator.addExpression(temp_aux, temp_aux, self.getIndex(index_value), '+')
             
             # Save upper limit to BoundsError
-            generator.getStack(initial_size, variable.pos)
-            self.getUpperLimit(initial_size)
-            self.verifyBoundsError(temp_aux, self.upper_limit, temp_result)            
-            
+            #generator.getStack(initial_size, variable.pos)
+            #self.getUpperLimit(initial_size)
+            #self.verifyBoundsError(temp_aux, self.upper_limit, temp_result)            
             generator.getHeap(temp_result, temp_move)
             
-            generator.putLabel(self.exit_label)
+            #generator.putLabel(self.exit_label)
             return Value(temp_result, variable.type_array, True)
 
         else:
@@ -80,13 +79,16 @@ class CallArray(Expression):
                 temp_move = generator.addTemp()
                 generator.getHeap(temp_move, temp_aux)
                 
+                # verify error
+                self.verifyBoundsError2(index_value.value, temp_move, temp_result)
+                
                 generator.addExpression(temp_move, temp_move, '1', '+')
                 generator.addExpression(temp_move, temp_move, self.getIndex(index_value), '+')
                 
             generator.getHeap(temp_result, temp_move)
             generator.addComment("--- Fin < CallArray >  ---")
             
-            #generator.putLabel(self.exit_label)
+            generator.putLabel(self.exit_label)
             return Value(temp_result, variable.type_array, True)
     
     def getIndex(self, index_):
@@ -129,3 +131,25 @@ class CallArray(Expression):
         
         generator.addGoto(self.exit_label)
         generator.putLabel(label_continue)
+        
+    def verifyBoundsError2(self, index_, upperLimit_, temp_result_):
+        generator_aux = Generator()
+        generator = generator_aux.getInstance()
+                
+        label_error = generator.newLabel()
+        label_continue = generator.newLabel()
+        tmp_size = generator.addTemp()
+        tmp_index = generator.addTemp()
+        generator.addExpression(tmp_index, index_, '', '')
+        generator.getHeap(tmp_size, upperLimit_)
+        
+        generator.addIf(tmp_index, '1', '<', label_error)
+        generator.addIf(tmp_index, tmp_size, '>', label_error)
+        generator.addGoto(label_continue)
+        
+        generator.putLabel(label_error)
+        generator.printBoundsError()
+        generator.addExpression(temp_result_, '-1', '', '')
+        
+        generator.addGoto(self.exit_label)
+        generator.putLabel(label_continue)        

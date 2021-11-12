@@ -4,34 +4,85 @@ from src.SymbolTable.Environment import *
 
 def compile():
     input_ = '''
-# Struct Inmutable
-struct Personaje
-    nombre::String;
-    edad::Int64;
-    descripcion::String;
+function quicksort(array::Vector{Int64},low::Int64,n::Int64)::Int64
+	lo = low::Int64;
+	hi = n::Int64;
+	if lo >= n
+		return 0;
+    end;
+	mid = array[(trunc(((lo + hi) / 2)))]::Int64;
+	while lo < hi
+		while (lo<hi && array[lo] < mid)
+			lo = lo + 1;
+        end;
+		while (lo<hi && array[hi] > mid)
+			hi = hi - 1;
+        end;
+		if lo < hi
+			T = array[lo]::Int64;
+			array[lo] = array[hi];
+			array[hi] = T;
+        end;
+    end;
+	if (hi < lo)
+		T = hi::Int64;
+		hi = lo;
+		lo = T;
+    end;
+	quicksort(array,low,lo);
+	cond = 0::Int64;
+	if ( lo == low)
+		cond = lo + 1;
+	else
+		cond = lo;
+    end;
+	quicksort(array,cond,n);
 end;
-# Struct Mutable
-mutable struct Carro
-    placa::String;
-    color::String;
-    tipo::String;
+i = 0::Int64;
+array = [
+        [12,9,4,99,56,34,78,22,1,3,10,13,120],
+        [32,7*3,7,89,56,909,109,2,9,9874^0,44,3,820*10,11,8*0+8,10]
+    ]::Vector{Vector{Int64}};
+    
+    
+println("Quick Sort");
+println("Valores antes de Quicksort");
+for x in 1:length(array[1])
+	print(array[1][x]);
+    print(", ");
+ 
 end;
-# Construcción Struct
-p1 = Personaje("Fer", 18, "No hace nada");
-p2 = Personaje("Fer", 18, "Maneja un carro");
-c1 = Carro("090PLO", "gris", "mecanico");
-c2 = Carro("P0S921", "verde", "automatico");
+println("");
+println("-------------------------");
+quicksort(array[1],1,length(array[1]));
+println("Valores despues de QuickSort:");
+for y in 1:length(array[1])
+	print(array[1][y]);
+    print(", ");
+ 
+end;
+println("");
+println("Valores antes de Quicksort");
+for x in 1:length(array[2])
+	print(array[2][x]);
+    print(", ");
+ 
+end;
+println("");
+println("-------------------------");
+quicksort(array[2],1,length(array[2]));
+println("Valores despues de QuickSort:");
+for y in 1:length(array[2])
+	print(array[2][y]);
+    print(", ");
+end;
+println("-------------------------");
 
-# Asignación Atributos
-p1.edad = 10; # Error, Struct Inmutable
-p2.edad = 20; # Error, Struct Inmutable
-c1.color = "cafe"; # Cambio aceptado
-c2.color = "rojo"; # Cambio aceptado
-# Acceso Atributo
-println(p1.edad); # Imprime 18
-println(c1.color); # Imprime cafe
-
-
+println(array[1][13]);
+println(array[1][14]);
+println(array[1][15]);
+println(array[1][1]);
+println(array[1][0]);
 
 
 

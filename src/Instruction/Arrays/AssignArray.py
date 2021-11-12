@@ -56,7 +56,6 @@ class AssignArray(Instruction):
             #generator.getStack(initial_size, variable.pos)
             #self.getUpperLimit(initial_size)
             #self.verifyBoundsError(auxiliar_index, self.upper_limit, temp_result)            
-            
             #generator.addExpression(temp_move, temp_move, auxiliar_index, '+')
             
             # Assign value
@@ -85,7 +84,10 @@ class AssignArray(Instruction):
 
                 temp_move = generator.addTemp()                
                 generator.getHeap(temp_move, temp_aux)
-                
+
+                # verify error
+                self.verifyBoundsError2(index_value.value, temp_move, temp_result)
+                                
                 # Save upper limit to BoundsError
                 #self.getUpperLimit(temp_move)
                 #self.verifyBoundsError(auxiliar_index, self.upper_limit, temp_result)
@@ -96,7 +98,7 @@ class AssignArray(Instruction):
             generator.setHeap(temp_move, value_expression.value) 
             generator.addComment("--- Fin < AssignArray >  ---")
             
-            #generator.putLabel(self.exit_label)
+            generator.putLabel(self.exit_label)
             #return Value(temp_result, variable.type_array, True)
 
     def getIndex(self, index_):
@@ -138,3 +140,25 @@ class AssignArray(Instruction):
         
         generator.addGoto(self.exit_label)
         generator.putLabel(label_continue)
+        
+    def verifyBoundsError2(self, index_, upperLimit_, temp_result_):
+        generator_aux = Generator()
+        generator = generator_aux.getInstance()
+                
+        label_error = generator.newLabel()
+        label_continue = generator.newLabel()
+        tmp_size = generator.addTemp()
+        tmp_index = generator.addTemp()
+        generator.addExpression(tmp_index, index_, '', '')
+        generator.getHeap(tmp_size, upperLimit_)
+        
+        generator.addIf(tmp_index, '1', '<', label_error)
+        generator.addIf(tmp_index, tmp_size, '>', label_error)
+        generator.addGoto(label_continue)
+        
+        generator.putLabel(label_error)
+        generator.printBoundsError()
+        generator.addExpression(temp_result_, '-1', '', '')
+        
+        generator.addGoto(self.exit_label)
+        generator.putLabel(label_continue)            
