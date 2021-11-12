@@ -19,6 +19,7 @@ class AssignStruct(Instruction):
         generator = generator_aux.getInstance()
         
         variable : Symbol = environment_.getVar(self.id)
+        
         expression = self.expression.compile(environment_)
         
         if variable is None:
@@ -32,6 +33,12 @@ class AssignStruct(Instruction):
         i = 0
         att_type = None
         struct: SymbolStruct = environment_.getStruct(variable.type_struct)
+        
+        if struct.type_struct == StructType.INMUTABLE:
+            generator.addError(f'Struct de tipo INMUTABLE < {self.id} > no puede asignarse',
+                               self.line, self.column)
+            return
+        
         if not variable.isGlobal:
             tmp_pos = generator.addTemp()    
             generator.addExpression(tmp_pos, 'P', variable.pos, '+')
@@ -66,7 +73,6 @@ class AssignStruct(Instruction):
             att: ParamStruct
             if att.id == att_name_:
                 att_type = att
-                print("/////", att_type.type_aux)
                 return att_type, i
             i += 1
         

@@ -69,7 +69,6 @@ class AccessStruct(Instruction):
             att: ParamStruct
             if att.id == att_name_:
                 att_type = att
-                print("/////", att_type.type_aux)
                 return att_type, i
             i += 1
         
