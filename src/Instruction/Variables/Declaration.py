@@ -14,6 +14,8 @@ class Declaration(Instruction):
     def compile(self, environment_):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
+        self.scope = SymbolTableType.GLOBAL
+        
         
         generator.addComment("--- Inicio < Compilar valor de variable > ---")
         value = self.value.compile(environment_)

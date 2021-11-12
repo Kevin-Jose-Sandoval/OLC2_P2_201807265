@@ -17,6 +17,7 @@ class Generator:
         # temporary list
         self.temps = []
         self.errors = []
+        self.symbol_table = []
         self.tempsRecover = {}
         # natives list
         self.printString = False
@@ -27,6 +28,9 @@ class Generator:
         self.repetitionStr = False
         self.compareStr = False
         self.truncFloat = False
+        # reports
+        self.aux_errors = []
+        self.table = []
         
         self.list_aux = []
 
@@ -89,6 +93,7 @@ class Generator:
         # temporary list
         self.temps = []
         self.errors = []
+        self.symbol_table = []
         self.tempsRecover = {}
         # natives list
         self.printString = False
@@ -99,6 +104,9 @@ class Generator:
         self.repetitionStr = False
         self.compareStr = False
         self.truncFloat = False
+        # reports
+        self.aux_errors = []
+        self.table = []        
 
         Generator.generator = Generator()    
 

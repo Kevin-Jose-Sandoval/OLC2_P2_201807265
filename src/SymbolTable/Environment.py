@@ -1,8 +1,10 @@
+from src.Generator.Generator3D import Generator
 from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import Type
 from src.SymbolTable.Symbol import *
 from src.SymbolTable.Types import *
 from src.Instruction.Structs.SymbolStruct import *
+from src.SymbolTable.TableObject import *
 
 class Environment:
         
@@ -38,6 +40,9 @@ class Environment:
             self.size += 1
             self.variables[id_var_] = new_symbol
         
+        # TABLE SYMBOL
+        self.addSymbolTable(new_symbol)
+        
         return self.variables[id_var_] 
         
         
@@ -59,6 +64,9 @@ class Environment:
             return True
         else:
             self.functions[id_function_] = function_
+            generator_aux = Generator()
+            generator = generator_aux.getInstance()            
+            generator.symbol_table.append(TableObject(id_function_, self.type, self.scope))            
             return False
             
     def saveStruct(self, id_, list_attributes_, type_struct_ = StructType.INMUTABLE)            :
@@ -114,4 +122,22 @@ class Environment:
         
         for i in env.variables:
             print(i, " , ", str(env.variables[i].value) +" | ", end="")
-        print("")                    
+        print("")
+        
+    def addSymbolTable(self, symbol):
+        generator_aux = Generator()
+        generator = generator_aux.getInstance()
+                
+        if symbol.type == Type.ARRAY:
+            
+            generator.symbol_table.append(TableObject(symbol.id, SymbolTableType.ARRAY, self.scope))
+            
+        elif self.type != SymbolTableType.PARAMETER:
+            generator.symbol_table.append(TableObject(symbol.id, SymbolTableType.VARIABLE, self.scope))
+        else:
+            flag = False
+            for i in generator.symbol_table:
+                if i.name in symbol.id and i.type == SymbolTableType.PARAMETER and i.scope == self.scope:
+                    flag = True
+            if flag == False:
+                generator.symbol_table.append(TableObject(symbol.id, self.type, self.scope))        

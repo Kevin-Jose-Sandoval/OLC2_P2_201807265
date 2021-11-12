@@ -15,17 +15,26 @@ class Function(Instruction):
         self.instructions = instructions_
         
     def compile(self, environment_):
+        environment_.scope = SymbolTableType.GLOBAL
+        environment_.type = SymbolTableType.FUNCTION  
+                
         environment_.saveFunction(self.id, self)        
         generator_aux = Generator()
         generator = generator_aux.getInstance()
         
         new_env = Environment(environment_)
         
+
+                    
         return_label = generator.newLabel()
         new_env.return_label = return_label
         new_env.size = 1
         
         for param in self.parameters:
+            new_env.type = SymbolTableType.PARAMETER
+            new_env.scope = self.id
+            
+            
             in_heap_ = (param.type == Type.STRING or param.type == Type.STRUCT)
             
             if isinstance(param.type, Type) and param.type_aux != Type.ARRAY:
@@ -38,7 +47,8 @@ class Function(Instruction):
 
         generator.freeAllTemps()
         generator.addBeginFunc(self.id)
-        
+
+        new_env.type = None       
         self.instructions.compile(new_env)
         
         if self.type is not None:

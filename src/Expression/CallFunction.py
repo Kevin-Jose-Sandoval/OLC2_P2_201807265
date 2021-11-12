@@ -15,15 +15,16 @@ class CallFunction(Expression):
         generator = generator_aux.getInstance()
 
         function_ = environment_.getFunction(self.id)
-        
+
         if function_ is not None:
             param_values = []
+            environment_.scope = self.id
 
-            
             size = generator.saveTemps(environment_)
             
             # compiling parameters values
             for param in self.parametes:
+                #environment_.type = SymbolTableType.PARAMETER
                 param_values.append(param.compile(environment_))
             
             temp = generator.addTemp()            
@@ -37,6 +38,8 @@ class CallFunction(Expression):
 
                 if aux != len(param_values):
                     generator.addExpression(temp, temp, '1', '+')
+
+            #environment_.scope = self.id
 
             generator.newEnv(environment_.size)
             generator.callFun(self.id)
