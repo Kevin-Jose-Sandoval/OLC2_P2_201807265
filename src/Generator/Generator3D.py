@@ -31,12 +31,19 @@ class Generator:
         # reports
         self.aux_errors = []
         self.table = []
+        self.flag_math = False
         
         self.list_aux = []
 
     # ============ Code 3D
     def initialHeader(self):
-        header = '/*----- HEADER -----*/\npackage main;\n\nimport (\n\t"fmt";\n)\n\n'
+        header = None
+        
+        if self.flag_math:
+            header = '/*----- HEADER -----*/\npackage main;\n\nimport (\n\t"fmt";\n\t"math"\n)\n\n'
+        else:
+            header = '/*----- HEADER -----*/\npackage main;\n\nimport (\n\t"fmt"\n)\n\n'
+            
 
         if len(self.temps) > 0:
             header += 'var '
@@ -104,6 +111,7 @@ class Generator:
         self.repetitionStr = False
         self.compareStr = False
         self.truncFloat = False
+        self.flag_math = False
         # reports
         self.aux_errors = []
         self.table = []        
@@ -205,7 +213,7 @@ class Generator:
         self.codeIn(f'fmt.Printf("%{type_}", int({value_}));\n')
 
     def addPrintFloat(self, type_, value_):
-        self.codeIn(f'fmt.Printf("%{type_}", float64({value_}));\n')
+        self.codeIn(f'fmt.Printf("%{type_}", {value_});\n')
 
     def printTrue(self):
         self.addPrint("c", 116)
@@ -539,9 +547,9 @@ class Generator:
         self.addEndFunc()
         self.inNatives = False
         self.freeTemp(t2)
-        self.freeTemp(t2)
-        self.freeTemp(t4)
+        self.freeTemp(t3)
         self.freeTemp(t5)
+        self.freeTemp(t4)
         self.freeTemp(t6)
         
     def fRepetitionStr(self):
@@ -604,7 +612,8 @@ class Generator:
         self.addGoto(L0)
         
         self.putLabel(L2)
-        self.setHeap('H', '-1')        
+        self.setHeap('H', '-1')
+        self.nextHeap()        
         self.setStack('P', t0)        
         # ===== END CODE
 
@@ -614,9 +623,9 @@ class Generator:
         self.freeTemp(t1)
         self.freeTemp(t2)
         self.freeTemp(t3)
-        self.freeTemp(t4)
-        self.freeTemp(t5)
         self.freeTemp(counter)
+        self.freeTemp(t5)        
+        self.freeTemp(t4)
 
     def fCompareStr(self):
         if self.compareStr:

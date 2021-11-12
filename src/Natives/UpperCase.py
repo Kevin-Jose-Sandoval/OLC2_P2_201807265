@@ -13,12 +13,13 @@ class UpperCase(Expression):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
         
-        self.value.compile(environment_)
+        value = self.value.compile(environment_)
         
         generator.fUpperCase()
         param_temp = generator.addTemp()
         generator.addExpression(param_temp, 'P', environment_.size, '+')
-    
+        generator.addExpression(param_temp, param_temp, '1', '+')
+        generator.setStack(param_temp, value.value)
     
         generator.newEnv(environment_.size)
         generator.callFun('upperCase')

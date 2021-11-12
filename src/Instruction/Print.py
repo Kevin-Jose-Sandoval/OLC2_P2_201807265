@@ -27,7 +27,7 @@ class Print(Instruction):
                     generator.addPrint("d", value.value)
 
                 elif value.type == Type.FLOAT64:
-                    generator.addPrintFloat("f", value.value)
+                    generator.addPrintFloat("g", value.value)
                     
                 elif value.type == Type.BOOLEAN:
                     self.typeBoolean(value)
