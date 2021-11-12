@@ -33,9 +33,14 @@ class AssignArray(Instruction):
         self.exit_label = generator.newLabel()
         initial_size = generator.addTemp()
         auxiliar_index = generator.addTemp()
+
+        temp_pos = variable.pos
+        if not variable.isGlobal:
+            temp_pos = generator.addTemp()
+            generator.addExpression(temp_pos, 'P', variable.pos, "+")
         
         # position at start of array (size)
-        generator.getStack(temp_move, variable.pos)
+        generator.getStack(temp_move, temp_pos)
         generator.addExpression(temp_move, temp_move, '1', '+')
 
         value_expression = self.expression.compile(environment_)

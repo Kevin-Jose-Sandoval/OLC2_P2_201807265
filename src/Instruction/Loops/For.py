@@ -75,7 +75,7 @@ class For(Instruction):
             generator.putLabel(exit)
             # ------ cycle end 
 
-        #value = self.way_iterate.compile(environment_)
+        value = self.way_iterate.compile(environment_)
         #print(value, '***********')
         if ( self.way_iterate.type_iteration == TypeIteration.ARRAY or 
                 self.way_iterate.type_iteration == TypeIteration.ID or

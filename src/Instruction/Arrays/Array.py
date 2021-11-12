@@ -23,10 +23,12 @@ class Array(Instruction):
         temp_move = generator.addTemp()
         
         generator.addExpression(temp, 'H', '', '')
-        generator.addExpression(temp_move, temp, '1', '+')
-        
-        generator.setHeap('H', len(self.expressions_list) )     # save array size
+        generator.addExpression(temp_move, 'H', '', '')
         generator.addExpression('H', 'H', self.size + 1, '+')
+        generator.setHeap(temp_move, self.size)     # save array size
+        
+        generator.addExpression(temp_move, temp_move, '1', '+')
+        
 
         for expression in self.expressions_list:            
             value = expression.compile(environment_)
@@ -37,14 +39,15 @@ class Array(Instruction):
             generator.setHeap(temp_move, value.value)            
             generator.addExpression(temp_move, temp_move, '1', '+')
             
-            if value.type == Type.ARRAY:
-                self.values_list.append(value.getValuesArray())
-            else:     
-                self.values_list.append(value.value)
+            #if value.type == Type.ARRAY:
+            #    self.values_list.append(value.getValuesArray())
+            #else:     
+            #    self.values_list.append(value.value)
 
-        generator.list_aux.append(self.values_list)
+        #generator.list_aux.append(self.values_list)
         
         generator.addComment("--- Fin < Guardar Array >  ---")
+        
         value_return = Value(temp, Type.ARRAY, True)
         
         if isinstance(self.type, Type):

@@ -12,8 +12,10 @@ class Length(Expression):
     def compile(self, environment_):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
+        print("LENGTH: ")
 
         value: Value = self.expression.compile(environment_)
+        print("LENGTH: ", value.value, value.type)
         
         if value.type == Type.STRING:
             pass
@@ -28,7 +30,7 @@ class Length(Expression):
                 generator.getHeap(length, temp)
                 generator.addSpace()
                 generator.addComment('Fin Length de ARRAY')
-                
+
                 return Value(length, Type.INT64, True)
             
             else:

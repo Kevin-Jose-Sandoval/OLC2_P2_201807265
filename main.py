@@ -42,13 +42,42 @@ end;
 i = 0::Int64;
 
 array = [
-        [12,9,4,99,56,34,78,22,1,3,10,13,120]
-        
+        [12,9,4,99,56,34,78,22,1,3,10,13,120],
+        [32,7*3,7,89,56,909,109,2,9,9874^0,44,3,820*10,11,8*0+8,10]
     ]::Vector{Vector{Int64}};
 
-quicksort(array[1],1,13);
-for y in 1:14
+println("Quick Sort");
+println("Valores antes de Quicksort");
+for x in 1:length(array[1])
+	print(array[1][x]);
+    print(", ");
+ 
+end;
+println("");
+
+println("-------------------------");
+quicksort(array[1],1,length(array[1]));
+println("Valores despues de QuickSort:");
+for y in 1:length(array[1])
 	print(array[1][y]);
+    print(", ");
+ 
+end;
+println("");
+
+println("Valores antes de Quicksort");
+for x in 1:length(array[2])
+	print(array[2][x]);
+    print(", ");
+ 
+end;
+println("");
+
+println("-------------------------");
+quicksort(array[2],1,length(array[2]));
+println("Valores despues de QuickSort:");
+for y in 1:length(array[2])
+	print(array[2][y]);
     print(", ");
 end;
 

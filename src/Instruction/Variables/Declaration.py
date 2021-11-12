@@ -26,7 +26,7 @@ class Declaration(Instruction):
             new_var = environment_.saveVar(self.id, value.type, in_heap)
         new_var.type = value.type
         
-        print(self.id, value.value)
+        #print(self.id, value.value)
         # --------- ASSING TYPE
         #print(value.type, self.type_aux, '--------')
         if value.type == Type.ARRAY:
