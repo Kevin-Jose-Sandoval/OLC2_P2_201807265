@@ -16,7 +16,6 @@ class Declaration(Instruction):
         generator = generator_aux.getInstance()
         self.scope = SymbolTableType.GLOBAL
         
-        
         generator.addComment("--- Inicio < Compilar valor de variable > ---")
         value = self.value.compile(environment_)
         generator.addComment("--- Fin < Compilar valor de variable > ---")
@@ -32,7 +31,11 @@ class Declaration(Instruction):
         # --------- ASSING TYPE
         #print(value.type, self.type_aux, '--------')
         if value.type == Type.ARRAY:
-            new_var.type_array = self.type_aux
+            print("Array", value.type, self.type_aux, value.type_array)
+            if self.type_aux is not None:
+                new_var.type_array = self.type_aux
+            else:
+                new_var.type_array = value.type_array
         if value.type == Type.STRUCT:
             new_var.type_struct = value.aux_type
         

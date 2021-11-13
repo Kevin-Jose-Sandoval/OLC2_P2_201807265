@@ -51,6 +51,7 @@ class Array(Instruction):
         value_return = Value(temp, Type.ARRAY, True)
         
         if isinstance(self.type, Type):
+            #print('---------', self.type , '----')
             value_return.type_array = self.type
         
         return value_return

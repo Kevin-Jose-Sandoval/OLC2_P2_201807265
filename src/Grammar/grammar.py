@@ -319,8 +319,8 @@ def p_print_none(t):
 # ------------------------------ DECLARATION
 def p_declaration_st(t):
     '''
-    declaration_st : ID EQUAL expression COLON COLON type
-                   | ID EQUAL expression
+    declaration_st : ID EQUAL expression
+                   | ID EQUAL expression COLON COLON type
     '''
     if len(t) == 7:
         t[0] = Declaration(t[1], t[3], t.lineno(2), find_column(input_, t.slice[2]), t[6])

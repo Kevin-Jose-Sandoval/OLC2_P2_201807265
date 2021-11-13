@@ -15,7 +15,7 @@ class For(Instruction):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
         generator.addComment("--- Inicio < For >  ---")
-        
+
         if self.way_iterate.type_iteration == TypeIteration.RANK:
             # save var
             var = environment_.saveVar(self.id, Type.INT64, False)
@@ -83,7 +83,6 @@ class For(Instruction):
                 ) :
             
             #value = self.way_iterate.compile(environment_)
-
             if value.type == Type.ARRAY:            
                 # save var and getting ID
                 variable = environment_.saveVar(self.id, value.type_array, False)
@@ -140,7 +139,7 @@ class For(Instruction):
                 # ------ get and increase variables
                 generator.addExpression(counter, counter, '1', '+')
                 generator.addExpression(index_array, index_array, '1', '+')
-                
+
                 # ------ start again
                 generator.addGoto(start)
 
@@ -226,5 +225,5 @@ class For(Instruction):
             generator.addGoto(start)
             generator.putLabel(exit)
             # ------ cycle end
-            
+
         generator.addComment("--- Fin < For >  ---")

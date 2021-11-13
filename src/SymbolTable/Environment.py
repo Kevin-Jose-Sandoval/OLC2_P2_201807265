@@ -42,8 +42,8 @@ class Environment:
         
         # TABLE SYMBOL
         self.addSymbolTable(new_symbol)
-        
-        return self.variables[id_var_] 
+
+        return self.variables[id_var_]
         
         
     def saveVarStruct(self, id_var_, attributes_, type_, line_, column_):
@@ -123,15 +123,13 @@ class Environment:
         for i in env.variables:
             print(i, " , ", str(env.variables[i].value) +" | ", end="")
         print("")
-        
+
     def addSymbolTable(self, symbol):
         generator_aux = Generator()
         generator = generator_aux.getInstance()
                 
         if symbol.type == Type.ARRAY:
-            
-            generator.symbol_table.append(TableObject(symbol.id, SymbolTableType.ARRAY, self.scope))
-            
+            generator.symbol_table.append(TableObject(symbol.id, SymbolTableType.ARRAY, self.scope))    
         elif self.type != SymbolTableType.PARAMETER:
             generator.symbol_table.append(TableObject(symbol.id, SymbolTableType.VARIABLE, self.scope))
         else:
@@ -140,4 +138,4 @@ class Environment:
                 if i.name in symbol.id and i.type == SymbolTableType.PARAMETER and i.scope == self.scope:
                     flag = True
             if flag == False:
-                generator.symbol_table.append(TableObject(symbol.id, self.type, self.scope))        
+                generator.symbol_table.append(TableObject(symbol.id, self.type, self.scope))

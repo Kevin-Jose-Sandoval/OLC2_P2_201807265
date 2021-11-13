@@ -1,56 +1,66 @@
 from src.Generator.Generator3D import Generator
+from flask import Flask, request
+from flask_cors import CORS
+
 from src.Grammar.grammar import parse
 from src.SymbolTable.Environment import *
+from src.SymbolTable.Exception import *
+from src.SymbolTable.Types import *
 
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/")
+def home():
+    return "<h1>COMPILADORES 2 - PROYECTO 2</h1>"
+
+@app.route("/compile", methods=['POST'])
 def compile():
-    input_ = '''
-val1 = 1::Int64;
-val2 = 10::Int64;
-val3 = 2021.2020::Float64;
-
-println("Probando declaracion de variables");
-println(val1, " ", val2, " ", val3);
-println("---------------------------------");
-# COMENTARIO DE UNA LINEA
-val1 = val1 + 41 - 123 * 4 / (2 + 2 * 2) - (10 + (125 % 5)) * 2 ^ 2;
-val2 = 11 * (11 % (12 + -10)) + 22 / 2;
-val3 = 2 ^ (2 * 12 / 6) + 25 / 5#= COMENTARIO
-MULTILINEA =#;
-println("Probando asignación de variables y aritmeticas");
-println(val1, " ", val2, " ", val3);
-println("---------------------------------");
-
-rel1 = (((val1 - val2) == 24) && (true && (false || 5 >= 5))) || ((7*7) != (15+555) || -61 > 51);
-rel2 = (7*7) <= (15+555) && 1 < 2;
-rel3 = ((0 == 0) != ((532 > 532)) == ("Hola" == "Hola")) && (false || (false == true));
-println("Probando relacionales y logicas");
-println(rel1, " ", rel2, " ", rel3);
-println("---------------------------------");
-
-println("OPERACIONES " * "CON " * "Cadenas"^3);
-despedida = "Adios mundo :c";
-println(uppercase("Hola Mundo! ") * lowercase(despedida));
-
-'''
+    input_ = request.json['input']
+    
     generator_aux = Generator()
     generator_aux.cleanAll()
     generator = generator_aux.getInstance()
     
     new_env = Environment(None)
-    ast = parse(input_)
+    new_env.scope = SymbolTableType.GLOBAL    
 
-    for instruction in ast:
-        instruction.compile(new_env)
+    ast = parse(input_)    
+    try:
+        for instr in ast:
+            instr.compile(new_env)
+    except:
+        print("Error al compilar instrucciones")
         
-    print(generator.getCode())
-    
-    print('----------------- EXCEPTIONS ------------------')
-    for i in generator.errors:
-        print(i.toString())
-    print('----------------------------------------------')
-    print('----------------- SYMBOL TABLE ------------------')
+    key = 0;
     for i in generator.symbol_table:
-        print(i.toString())
-    print('----------------------------------------------')    
+        key += 1
+        type_ = i.type
+        scope_ = i.scope
+        if isinstance(i.type, SymbolTableType): type_ = i.type.name
+        if isinstance(i.scope, SymbolTableType): scope_ = i.scope.name
+        generator.table.append([key, i.name, type_, scope_])
     
-compile()
+    key = 0;
+    for i in generator.errors:
+        key += 1
+        generator.aux_errors.append([key, i.message, i.line, i.column])
+        
+    return { 'msg': generator.getCode(), 'code': 200 }
+
+@app.route("/symbol-table", methods=['GET'])
+def getSymbolTable():
+    generator_aux = Generator()
+    generator = generator_aux.getInstance() 
+       
+    return { 'msg': generator.table, 'code': 200 }
+
+@app.route("/errors", methods=['GET'])
+def getErrors():
+    generator_aux = Generator()
+    generator = generator_aux.getInstance() 
+        
+    return { 'msg': generator.aux_errors, 'code': 200 }
+
+if __name__ == "__main__":
+    app.run()

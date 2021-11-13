@@ -55,7 +55,7 @@ class Generator:
             
             header += ' float64;\n'
         
-        header += 'var P, H float64;\nvar stack [1000000]float64;\nvar heap [1000000]float64;\n\n'
+        header += 'var P, H float64;\nvar stack [9000000]float64;\nvar heap [9000000]float64;\n\n'
         return header
     
     def getCode(self):

@@ -23,17 +23,14 @@ class Function(Instruction):
         generator = generator_aux.getInstance()
         
         new_env = Environment(environment_)
-        
-
                     
         return_label = generator.newLabel()
         new_env.return_label = return_label
         new_env.size = 1
-        
+
         for param in self.parameters:
             new_env.type = SymbolTableType.PARAMETER
             new_env.scope = self.id
-            
             
             in_heap_ = (param.type == Type.STRING or param.type == Type.STRUCT)
             
