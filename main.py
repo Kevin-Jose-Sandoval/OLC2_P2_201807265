@@ -4,7 +4,6 @@ from flask_cors import CORS
 
 from src.Grammar.grammar import parse
 from src.SymbolTable.Environment import *
-from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import *
 
 app = Flask(__name__)
