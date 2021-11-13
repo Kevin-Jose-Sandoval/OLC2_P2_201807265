@@ -21,7 +21,7 @@ class Print(Instruction):
         
             if len(self.value) == 1:
                 value = self.value[0].compile(environment_)
-
+                print(value.value, value.type, value.type_array, '----**--')
                # generator.printValueHeap(value.value)
                 if value.type == Type.INT64:
                     generator.addPrint("d", value.value)

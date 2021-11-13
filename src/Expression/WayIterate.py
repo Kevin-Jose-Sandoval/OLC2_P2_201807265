@@ -18,7 +18,7 @@ class WayIterate(Expression):
 
         if self.type_iteration == TypeIteration.STRUCT:
             value = self.expression1.compile(environment_)
-            print(value.value, value.type, '=====', value.type_array, '**')
+            #print(value.value, value.type, '=====', value.type_array, '**')
             
             # value.value start the array
             # considering that it will always be an array
@@ -73,3 +73,10 @@ class WayIterate(Expression):
             if variable.type == Type.STRING:
                 
                 return Value(position, variable.type, True)
+            
+        elif self.type_iteration is None:
+            value = self.expression1.compile(environment_)
+            #print('***',value.aux_type, value.value, value.type, value.type_array)
+            
+            return value
+            

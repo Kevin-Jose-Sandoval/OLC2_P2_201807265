@@ -30,12 +30,14 @@ class Function(Instruction):
         for param in self.parameters:
             new_env.type = SymbolTableType.PARAMETER
             new_env.scope = self.id
+            print(param.type, '//////////', param.type_aux)
             
             in_heap_ = (param.type == Type.STRING or param.type == Type.STRUCT)
             
             if isinstance(param.type, Type) and param.type_aux != Type.ARRAY:
                 new_env.saveVar(param.id, param.type, in_heap_)
             elif isinstance(param.type, Type) and param.type_aux == Type.ARRAY:
+                print("Aquii")
                 var :Symbol  = new_env.saveVar(param.id, Type.ARRAY, in_heap_)
                 var.type_array = param.type
             else:

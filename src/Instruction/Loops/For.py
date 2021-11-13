@@ -79,7 +79,8 @@ class For(Instruction):
         #print(value, '***********')
         if ( self.way_iterate.type_iteration == TypeIteration.ARRAY or 
                 self.way_iterate.type_iteration == TypeIteration.ID or
-                self.way_iterate.type_iteration == TypeIteration.STRUCT
+                self.way_iterate.type_iteration == TypeIteration.STRUCT or
+                self.way_iterate.type_iteration is None
                 ) :
             
             #value = self.way_iterate.compile(environment_)

@@ -346,6 +346,7 @@ def p_sub_type_array(t):
                    | TYPE_BOOL
                    | TYPE_CHAR
                    | TYPE_STRING
+                   | ID 
     '''
     if t[1] == 'Int64':
         t[0] = Type.INT64
@@ -357,6 +358,9 @@ def p_sub_type_array(t):
         t[0] = Type.CHAR
     elif t[1] == 'String':
         t[0] = Type.STRING
+        
+    elif t.slice[1].type == 'ID':
+        t[0] = t[1]        
     
 # ------------------------------ ACCESS ID
 def p_expression_id(t):
@@ -424,7 +428,11 @@ def p_for_access_struct(t):
     'ways_iterate : access_struct'
     t[0] = WayIterate(t[1], None, TypeIteration.STRUCT, t.lineno(1), 0)
 
-
+'''
+def p_for_expression(t):
+    'ways_iterate : call_array_st'
+    t[0] = WayIterate(t[1], None, None, t.lineno(1), 0)
+'''
 # ------------------------------ BREAK
 def p_break_st(t):
     'break_st : BREAK'
