@@ -45,7 +45,6 @@ reserved_words = {
     'end'       : 'END',
     'true'      : 'TRUE',
     'false'     : 'FALSE',
-    'global'    : 'GLOBAL',
     
     # types
     'Int64'     : 'TYPE_INT64',
@@ -80,7 +79,6 @@ reserved_words = {
     'trunc'     : 'TRUNC',
     'float'     : 'FLOAT',
     'string'    : 'STRING',
-    'typeof'    : 'TYPE_OF',
     
     # natives arrays
     'length'    : 'LENGTH',
@@ -231,7 +229,7 @@ def find_column(input_, token_):
     line_start = input_.rfind('\n', 0, token_.lexpos) + 1
     return (token_.lexpos - line_start) + 1
 
-import ply.lex as lex
+import src.ply.lex as lex
 lexer = lex.lex()
 
 precedence = (
@@ -765,7 +763,7 @@ def p_error(t):
 
 input_ = ''
 
-import ply.yacc as yacc
+import src.ply.yacc as yacc
 parser = yacc.yacc()
 
 def parse(input):
