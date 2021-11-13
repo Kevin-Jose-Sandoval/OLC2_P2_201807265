@@ -4,10 +4,6 @@ from src.SymbolTable.Types import *
 from src.Abstract.Value import *
 
 class Relational(Expression):
-    '''
-    if expression_true {goto L0;}
-    goto L1;
-    '''
     def __init__(self, left_, right_, type_, line_, column_):
         Expression.__init__(self, line_, column_)
         self.left = left_

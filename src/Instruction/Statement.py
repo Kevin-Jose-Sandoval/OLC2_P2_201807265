@@ -1,6 +1,4 @@
 from src.Abstract.Instruction import *
-from src.Abstract.Value import *
-from src.SymbolTable.Environment import *
 
 class Statement(Instruction):
     

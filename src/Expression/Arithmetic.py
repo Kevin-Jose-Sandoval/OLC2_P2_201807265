@@ -1,7 +1,6 @@
 from src.Generator.Generator3D import Generator
 from src.SymbolTable.TypeMatrix import *
 from src.Abstract.Expression import *
-from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import *
 from src.Abstract.Value import *
 
@@ -20,9 +19,6 @@ class Arithmetic(Expression):
         left_value = self.left.compile(environment_)
         right_value = self.right.compile(environment_)
         
-        if isinstance(left_value, Exception): return left_value
-        if isinstance(right_value, Exception): return right_value
-
         temp = generator.addTemp()        
         operation = getArithmeticType(self.type)    # +, -, *, /
         

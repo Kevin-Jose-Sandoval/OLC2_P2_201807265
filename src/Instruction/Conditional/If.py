@@ -1,7 +1,6 @@
 from src.Generator.Generator3D import Generator
 from src.Abstract.Instruction import *
 from src.SymbolTable.Types import *
-from src.SymbolTable.Exception import *
 
 class If(Instruction):
     
@@ -20,8 +19,8 @@ class If(Instruction):
         
         if condition.type != Type.BOOLEAN:
             print("La condición del IF no es de tipo BOOLEAN")
-            return Exception("La condición del IF no es de tipo BOOLEAN", self.line, self.column)
-        
+            return
+                
         generator.putLabel(condition.true_label)
         self.instructions.compile(environment_)
         

@@ -1,4 +1,3 @@
-from src.Generator.Generator3D import Generator
 from src.Abstract.Instruction import *
 
 class Param(Instruction):

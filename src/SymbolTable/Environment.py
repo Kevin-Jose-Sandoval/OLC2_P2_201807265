@@ -1,8 +1,6 @@
 from src.Generator.Generator3D import Generator
-from src.SymbolTable.Exception import *
 from src.SymbolTable.Types import Type
 from src.SymbolTable.Symbol import *
-from src.SymbolTable.Types import *
 from src.Instruction.Structs.SymbolStruct import *
 from src.SymbolTable.TableObject import *
 

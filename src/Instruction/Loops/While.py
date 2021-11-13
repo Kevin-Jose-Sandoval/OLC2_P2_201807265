@@ -1,8 +1,5 @@
 from src.Generator.Generator3D import Generator
 from src.Abstract.Instruction import *
-from src.Abstract.Value import *
-from src.SymbolTable.Types import *
-from src.SymbolTable.Exception import *
 from src.SymbolTable.Environment import *
 
 class While(Instruction):

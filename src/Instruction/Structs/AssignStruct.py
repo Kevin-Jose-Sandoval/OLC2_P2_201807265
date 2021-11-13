@@ -1,4 +1,3 @@
-from src.Abstract.Value import Value
 from src.Generator.Generator3D import Generator
 from src.Abstract.Instruction import *
 from src.SymbolTable.Types import *
